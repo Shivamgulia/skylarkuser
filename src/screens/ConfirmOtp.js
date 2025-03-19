@@ -1,81 +1,79 @@
 import {
   KeyboardAvoidingView,
-  Pressable,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   View,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
-
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 export default function ConfirmOTP() {
-  const [otp1, setOtp1] = useState();
-  const [otp2, setOtp2] = useState();
-  const [otp3, setOtp3] = useState();
-  const [otp4, setOtp4] = useState();
-
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const inputs = useRef([]);
   const navigation = useNavigation();
+
+  const handleChange = (index, value) => {
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < 3) {
+      inputs.current[index + 1].focus();
+    }
+  };
 
   function navigateNext() {
     navigation.navigate("Base");
   }
 
   return (
-    <SafeAreaView style={styles.cont}>
-      <KeyboardAvoidingView style={styles.cont}>
-        <View style={styles.head}>
-          <Text style={styles.headText}>Enter OTP</Text>
-          <Text style={styles.headBaseText}>Fill the OTP</Text>
-        </View>
-        <View style={styles.form}>
-          <View style={styles.otpForm}>
-            <TextInput
-              style={styles.input}
-              onChangeText={setOtp1}
-              value={otp1}
-              maxLength={1}
-            />
-
-            <TextInput
-              style={styles.input}
-              onChangeText={setOtp2}
-              value={otp2}
-              maxLength={1}
-            />
-
-            <TextInput
-              style={styles.input}
-              onChangeText={setOtp3}
-              value={otp3}
-              maxLength={1}
-            />
-
-            <TextInput
-              style={styles.input}
-              onChangeText={setOtp4}
-              value={otp4}
-              maxLength={1}
-            />
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Enter OTP</Text>
+            <Text style={styles.subtitle}>
+              We've sent a 4-digit code to your mobile number
+            </Text>
           </View>
 
-          <View style={styles.resend}>
-            <Text style={styles.textForgot}>Didn't get the code?</Text>
-            <TouchableOpacity
-              onPress={navigateNext}
-              style={styles.signinButton}
-            >
-              <Text style={styles.textSign}>Resend</Text>
+          <View style={styles.otpContainer}>
+            {[0, 1, 2, 3].map((index) => (
+              <TextInput
+                key={index}
+                style={[styles.otpInput, otp[index] && styles.filledOtp]}
+                keyboardType="number-pad"
+                maxLength={1}
+                value={otp[index]}
+                onChangeText={(text) => handleChange(index, text)}
+                ref={(ref) => (inputs.current[index] = ref)}
+                selectionColor="#9089ED"
+                autoFocus={index === 0}
+              />
+            ))}
+          </View>
+
+          <View style={styles.resendContainer}>
+            <Text style={styles.resendText}>Didn't receive the code?</Text>
+            <TouchableOpacity>
+              <Text style={styles.resendButton}>Resend Code</Text>
             </TouchableOpacity>
           </View>
-        </View>
 
-        <View style={styles.bottom}>
-          <TouchableOpacity onPress={navigateNext} style={styles.NextButton}>
-            <Text style={styles.textSign}>Next</Text>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={navigateNext}
+            activeOpacity={0.9}
+          >
+            <Text style={styles.buttonText}>Verify & Continue</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -84,88 +82,85 @@ export default function ConfirmOTP() {
 }
 
 const styles = StyleSheet.create({
-  cont: {
+  container: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: "#000",
   },
-  head: {
+  content: {
     flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  headText: {
-    color: "white",
-    fontSize: 34,
-  },
-  headBaseText: {
-    color: "white",
-    fontSize: 15,
-  },
-  form: {
-    flex: 2,
+    paddingHorizontal: 24,
+    paddingBottom: 40,
     justifyContent: "center",
-    paddingHorizontal: 20,
-    gap: 20,
   },
-  otpForm: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-evenly",
+  header: {
+    marginTop: 40,
+    marginBottom: 48,
     alignItems: "center",
   },
-  input: {
-    backgroundColor: "white",
-    color: "black",
-    height: 40,
-    width: 40,
-    alignItems: "center",
+  title: {
+    color: "#FFF",
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  subtitle: {
+    color: "#888",
+    fontSize: 16,
     textAlign: "center",
+    lineHeight: 24,
   },
-  signinButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 10,
+  otpContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 40,
+  },
+  otpInput: {
+    width: 64,
+    height: 64,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#333",
+    backgroundColor: "#1A1A1A",
+    color: "#FFF",
+    fontSize: 24,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  filledOtp: {
+    borderColor: "#9089ED",
+    backgroundColor: "#1A1A1A",
+  },
+  resendContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
+    gap: 8,
+    marginBottom: 32,
+  },
+  resendText: {
+    color: "#888",
+    fontSize: 14,
+  },
+  resendButton: {
+    color: "#9089ED",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  submitButton: {
     backgroundColor: "#9089ED",
-  },
-  resend: {
-    flex: 1,
+    padding: 16,
+    borderRadius: 12,
     alignItems: "center",
-    gap: 20,
+    justifyContent: "center",
+    elevation: 3,
+    shadowColor: "#9089ED",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
-  textSign: {
-    color: "white",
+  buttonText: {
+    color: "#FFF",
     fontSize: 16,
-  },
-  textForgot: {
-    color: "white",
-    fontSize: 16,
-  },
-  signin: {
-    alignItems: "center",
-  },
-  singinText: {
-    color: "white",
-    backgroundColor: "black",
-
-    position: "relative",
-
-    width: 100,
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    top: -20,
-  },
-  bottom: {
-    flex: 1,
-    justifyContent: "flex-end",
-    paddingBottom: 30,
-  },
-  NextButton: {
-    height: 50,
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 10,
-    alignItems: "center",
-    backgroundColor: "#9089ED",
+    fontWeight: "600",
   },
 });

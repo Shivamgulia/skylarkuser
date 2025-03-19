@@ -1,6 +1,6 @@
 import {
   KeyboardAvoidingView,
-  Pressable,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -8,15 +8,16 @@ import {
   View,
   TouchableOpacity,
   Image,
+  Dimensions
 } from "react-native";
-
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-export default function EmailLogin() {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+const { width } = Dimensions.get('window');
 
+export default function EmailLogin() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
   function navigateNext() {
@@ -24,46 +25,72 @@ export default function EmailLogin() {
   }
 
   return (
-    <SafeAreaView style={styles.cont}>
-      <KeyboardAvoidingView style={styles.cont}>
-        <View style={styles.head}>
-          <Text style={styles.headText}>Welcome Back</Text>
-          <Text style={styles.headBaseText}>Enter Your Details Below</Text>
-        </View>
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setEmail}
-            value={email}
-            placeholder="Email"
-            placeholderTextColor={"white"}
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={setPassword}
-            value={password}
-            placeholder="Password"
-            placeholderTextColor={"white"}
-          />
-          <TouchableOpacity onPress={navigateNext} style={styles.signinButton}>
-            <Text style={styles.textSign}>Sign in</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}} style={styles.forgotButton}>
-            <Text style={styles.textForgot}>Forgot your password?</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.signin}>
-          <Text style={styles.singinText}>sign in</Text>
-        </View>
-        <View style={styles.bottom}>
-          <TouchableOpacity onPress={() => {}} style={styles.bottombutton}>
-            <Image source={require("../../assets/logos/google.png")} />
-            <Text style={styles.bottombuttonText}>Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}} style={styles.bottombutton}>
-            <Image source={require("../../assets/logos/facebook.png")} />
-            <Text style={styles.bottombuttonText}>Facebook</Text>
-          </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Welcome Back</Text>
+            <Text style={styles.subtitle}>Enter Your Details Below</Text>
+          </View>
+
+          <View style={styles.form}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setEmail}
+              value={email}
+              placeholder="Email"
+              placeholderTextColor="#999"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            
+            <TextInput
+              style={styles.input}
+              onChangeText={setPassword}
+              value={password}
+              placeholder="Password"
+              placeholderTextColor="#999"
+              secureTextEntry
+            />
+
+            <TouchableOpacity 
+              style={styles.signInButton}
+              onPress={navigateNext}
+            >
+              <Text style={styles.buttonText}>Sign in</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.forgotPassword}>
+              <Text style={styles.linkText}>Forgot your password?</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.separator}>
+            <View style={styles.line} />
+            <Text style={styles.separatorText}>or continue with</Text>
+            <View style={styles.line} />
+          </View>
+
+          <View style={styles.socialButtons}>
+            <TouchableOpacity style={styles.socialButton}>
+              <Image 
+                source={require("../../assets/logos/google.png")} 
+                style={styles.socialIcon}
+              />
+              <Text style={styles.socialButtonText}>Google</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.socialButton}>
+              <Image 
+                source={require("../../assets/logos/facebook.png")}
+                style={styles.socialIcon}
+              />
+              <Text style={styles.socialButtonText}>Facebook</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -71,91 +98,107 @@ export default function EmailLogin() {
 }
 
 const styles = StyleSheet.create({
-  cont: {
+  container: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: '#000',
   },
-  head: {
+  content: {
     flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+    justifyContent: 'space-around',
   },
-  headText: {
-    color: "white",
-    fontSize: 34,
+  header: {
+    alignItems: 'center',
+    marginTop: 40,
   },
-  headBaseText: {
-    color: "white",
-    fontSize: 15,
+  title: {
+    color: '#FFF',
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  subtitle: {
+    color: '#888',
+    fontSize: 16,
   },
   form: {
-    flex: 2,
-    justifyContent: "center",
-    paddingHorizontal: 10,
-    gap: 20,
-    borderBottomColor: "grey",
-    borderBottomWidth: 1,
-    borderRadius: 50,
+    marginTop: 40,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "white",
-    color: "white",
-    paddingLeft: 10,
-  },
-  signinButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    alignItems: "center",
-    backgroundColor: "#9089ED",
-  },
-  forgotButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 25,
-    alignItems: "center",
-  },
-  textSign: {
-    color: "white",
+    backgroundColor: '#1A1A1A',
+    color: '#FFF',
     fontSize: 16,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
   },
-  textForgot: {
-    color: "white",
+  signInButton: {
+    backgroundColor: '#9089ED',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+    elevation: 3,
+    shadowColor: '#9089ED',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  buttonText: {
+    color: '#FFF',
     fontSize: 16,
+    fontWeight: '600',
   },
-  signin: {
-    alignItems: "center",
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginTop: 12,
   },
-  singinText: {
-    color: "white",
-    backgroundColor: "black",
-
-    position: "relative",
-
-    width: 100,
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    top: -20,
+  linkText: {
+    color: '#9089ED',
+    fontSize: 14,
   },
-  bottom: {
+  separator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  line: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-evenly",
+    height: 1,
+    backgroundColor: '#333',
   },
-  bottombutton: {
+  separatorText: {
+    color: '#666',
+    paddingHorizontal: 12,
+    fontSize: 14,
+  },
+  socialButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  socialButton: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#1A1A1A',
+    borderRadius: 12,
+    padding: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 1,
-    borderColor: "white",
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    height: 62,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    gap: 5,
+    borderColor: '#333',
+    maxWidth: (width - 64) / 2,
   },
-  bottombuttonText: {
-    color: "white",
-    fontSize: 15,
+  socialIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 8,
+  },
+  socialButtonText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });

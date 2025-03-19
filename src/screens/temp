@@ -1,0 +1,256 @@
+import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import Icon5 from "react-native-vector-icons/FontAwesome5";
+import Icon6 from "react-native-vector-icons/FontAwesome6";
+import Navbar from "../components/UI/Navbar";
+import { useNavigation } from "@react-navigation/native";
+
+const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
+
+export default function Home() {
+  const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+  const dates = [12, 13, 14, 15, 16, 17, 18];
+  const navigation = useNavigation();
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Training Plan</Text>
+        <Image 
+          source={require("../../assets/homeimages/fire.png")} 
+          style={styles.fireIcon}
+        />
+      </View>
+
+      {/* Calendar Section */}
+      <View style={styles.calendarContainer}>
+        <FlatList
+          data={days}
+          numColumns={7}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <View style={styles.calendarItem}>
+              <Text style={styles.calendarText}>{item}</Text>
+            </View>
+          )}
+          contentContainerStyle={styles.calendarContent}
+        />
+        
+        <FlatList
+          data={dates}
+          numColumns={7}
+          keyExtractor={(item) => item.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.calendarItem}>
+              <Text style={styles.calendarText}>{item}</Text>
+            </View>
+          )}
+          contentContainerStyle={styles.calendarContent}
+        />
+      </View>
+
+      {/* Today's Session */}
+      <Pressable 
+        style={styles.sessionContainer} 
+        onPress={() => navigation.navigate("Session")}
+      >
+        <Text style={styles.sectionTitle}>Today's Session</Text>
+        <Image
+          source={require("../../assets/homeimages/yoga.png")}
+          style={styles.sessionImage}
+        />
+        <View style={styles.sessionOverlay}>
+          <View style={styles.sessionBadge}>
+            <Text style={styles.badgeText}>Day 12</Text>
+          </View>
+          
+          <View style={styles.sessionInfo}>
+            <Text style={styles.infoText}>Strength</Text>
+            <Text style={styles.infoText}>Trainer Alex</Text>
+          </View>
+
+          <View style={styles.sessionMeta}>
+            <View style={styles.metaItem}>
+              <Icon5 name="clock" size={windowWidth * 0.04} color="#8888e9" />
+              <Text style={styles.metaText}>25 min</Text>
+            </View>
+            <View style={styles.metaItem}>
+              <Icon6 name="bolt-lightning" size={windowWidth * 0.04} color="#8888e9" />
+              <Text style={styles.metaText}>560 kcal</Text>
+            </View>
+            <View style={styles.playButton}>
+              <Icon5 name="play" size={windowWidth * 0.04} color="#ffff" />
+            </View>
+          </View>
+        </View>
+      </Pressable>
+
+      {/* Categories Sections */}
+      {[1, 2].map((section) => (
+        <View key={section} style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Categories</Text>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={section === 1 ? firstCategoryData : secondCategoryData}
+            keyExtractor={(item) => item.text}
+            renderItem={({ item }) => (
+              <View style={styles.categoryCard}>
+                <Image source={item.image} style={styles.categoryImage} />
+                <Text style={[styles.categoryText, { color: item.color }]}>
+                  {item.text}
+                </Text>
+              </View>
+            )}
+            contentContainerStyle={styles.categoryContent}
+          />
+        </View>
+      ))}
+
+      {/* Bottom Navbar */}
+      <View style={styles.navbar}>
+        <Navbar />
+      </View>
+    </View>
+  );
+}
+
+// Data for categories
+const firstCategoryData = [
+  { text: "cardio", image: require("../../assets/homeimages/cardio.png"), color: "black" },
+  { text: "yoga", image: require("../../assets/homeimages/yoga2.png"), color: "white" },
+  { text: "boxing", image: require("../../assets/homeimages/boxing.png"), color: "white" },
+];
+
+const secondCategoryData = [
+  { text: "cardio", image: require("../../assets/homeimages/cat1.png"), color: "white" },
+  { text: "yoga", image: require("../../assets/homeimages/cat2.png"), color: "white" },
+];
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: windowHeight * 0.06,
+    backgroundColor: 'white',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: windowWidth * 0.05,
+    marginBottom: windowHeight * 0.02,
+  },
+  headerTitle: {
+    fontSize: windowWidth * 0.05,
+    fontWeight: '600',
+  },
+  fireIcon: {
+    width: windowWidth * 0.08,
+    height: windowWidth * 0.08,
+    resizeMode: 'contain',
+  },
+  calendarContainer: {
+    marginHorizontal: windowWidth * 0.03,
+    marginBottom: windowHeight * 0.03,
+  },
+  calendarContent: {
+    justifyContent: 'space-between',
+  },
+  calendarItem: {
+    flex: 1,
+    alignItems: 'center',
+    marginVertical: windowHeight * 0.005,
+  },
+  calendarText: {
+    fontSize: windowWidth * 0.035,
+  },
+  sessionContainer: {
+    marginHorizontal: windowWidth * 0.05,
+    marginBottom: windowHeight * 0.03,
+  },
+  sectionTitle: {
+    fontSize: windowWidth * 0.05,
+    fontWeight: '600',
+    marginBottom: windowHeight * 0.01,
+    marginLeft: windowWidth * 0.03,
+  },
+  sessionImage: {
+    width: windowWidth * 0.9,
+    height: windowHeight * 0.22,
+    borderRadius: 13,
+  },
+  sessionOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    top: windowHeight * 0.03,
+    left: windowWidth * 0.05,
+    justifyContent: 'space-between',
+    paddingVertical: windowHeight * 0.02,
+  },
+  sessionBadge: {
+    backgroundColor: '#8888e9',
+    width: windowWidth * 0.18,
+    borderRadius: 27,
+    paddingVertical: windowHeight * 0.005,
+  },
+  badgeText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: windowWidth * 0.035,
+  },
+  sessionInfo: {
+    marginTop: windowHeight * 0.02,
+  },
+  infoText: {
+    color: 'white',
+    fontSize: windowWidth * 0.035,
+  },
+  sessionMeta: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: windowWidth * 0.1,
+  },
+  metaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: windowWidth * 0.01,
+  },
+  metaText: {
+    color: 'white',
+    fontSize: windowWidth * 0.035,
+  },
+  playButton: {
+    backgroundColor: '#8888e9',
+    padding: windowWidth * 0.03,
+    borderRadius: windowWidth * 0.5,
+  },
+  sectionContainer: {
+    marginBottom: windowHeight * 0.03,
+  },
+  categoryContent: {
+    paddingHorizontal: windowWidth * 0.03,
+  },
+  categoryCard: {
+    marginRight: windowWidth * 0.05,
+  },
+  categoryImage: {
+    width: windowWidth * 0.35,
+    height: windowWidth * 0.45,
+    borderRadius: 10,
+  },
+  categoryText: {
+    position: 'absolute',
+    left: windowWidth * 0.04,
+    bottom: windowHeight * 0.01,
+    fontSize: windowWidth * 0.04,
+    fontWeight: '500',
+  },
+  navbar: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: windowHeight * 0.08,
+    backgroundColor: '#66c9de',
+    paddingBottom: windowHeight * 0.015,
+  },
+});

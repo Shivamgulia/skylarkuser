@@ -1,97 +1,127 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import Icon from "react-native-vector-icons/FontAwesome";
-import FoundationIcon from "react-native-vector-icons/Foundation";
-import FontAwesome6 from "react-native-vector-icons/FontAwesome6";
-import { useNavigation } from "@react-navigation/native";
+import { Image, Pressable, StyleSheet, Text, View, Animated } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import LinearGradient from "react-native-linear-gradient";
 
 export default function Navbar() {
   const navigation = useNavigation();
-  return (
-    <View style={styles.cont}>
-      <Pressable
-        style={styles.navItem}
-        onPress={() => {
-          navigation.navigate("Base");
-        }}
-      >
-        <FoundationIcon name="home" size={37} color="black" />
-        <Text style={styles.navText}>Home</Text>
-      </Pressable>
-      <Pressable
-        style={styles.navItem}
-        onPress={() => {
-          navigation.navigate("Performance");
-        }}
-      >
-        <FoundationIcon name="graph-bar" size={37} color="black" />
-        <Text style={styles.navText}>Performance</Text>
-      </Pressable>
+  const route = useRoute();
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
-      <Pressable
-        style={styles.navItem}
-        onPress={() => {
-          navigation.navigate("Classes");
-        }}
-      >
-        {/* <FontAwesome6 name="user-doctor" size={37} color="black" /> */}
-        <Image
-          source={require("../../../assets/homeimages/clasesicon.png")}
-          style={{ width: 37, height: 37 }}
-        />
-        <Text style={styles.navText}>Classes</Text>
-      </Pressable>
-      <Pressable
-        style={styles.navItem}
-        onPress={() => {
-          navigation.navigate("Profile");
-        }}
-      >
-        <Icon name="user" size={37} color="black" />
-        <Text style={styles.navText}>Profile</Text>
-      </Pressable>
+  // Highlight the active tab
+  const activeTab = route.name;
+
+  // Animation for active tab
+  useEffect(() => {
+    Animated.spring(animatedValue, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  }, [activeTab]);
+
+  const tabs = [
+    { name: "Base", icon: require("../../../assets/homeimages/home.png"), label: "Home" },
+    { name: "Performance", icon: require("../../../assets/homeimages/performance.png"), label: "Performance" },
+    { name: "Classes", icon: require("../../../assets/homeimages/classicon.png"), label: "Classes" },
+    { name: "Profile", icon: require("../../../assets/homeimages/user.png"), label: "Profile" },
+  ];
+
+  return (
+    <View style={[styles.container, { backgroundColor: "#66c9de" }]}>
+      {tabs.map((tab, index) => (
+        <Pressable
+          key={index}
+          style={styles.navItem}
+          onPress={() => navigation.navigate(tab.name)}
+        >
+          <View style={styles.iconContainer}>
+            <Image
+              source={tab.icon}
+              style={[
+                styles.icon,
+                activeTab === tab.name && styles.activeIcon,
+              ]}
+            />
+            <Text
+              style={[
+                styles.label,
+                activeTab === tab.name && styles.activeLabel,
+              ]}
+            >
+              {tab.label}
+            </Text>
+          </View>
+          {activeTab === tab.name && (
+            <Animated.View
+              style={[
+                styles.activeIndicator,
+                {
+                  transform: [
+                    {
+                      scale: animatedValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.8, 1],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            />
+          )}
+        </Pressable>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  cont: {
-    height: 50,
+  container: {
+    height: 80,
     flexDirection: "row",
-    justifyContent: "space-evenly",
-    borderTopEndRadius: 36,
+    justifyContent: "space-around",
+    alignItems: "center",
     borderTopLeftRadius: 36,
-    width: "100%",
-  },
-  centerNav: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-    position: "relative",
-    top: -40,
-    borderRadius: "50%",
-    overflow: "visible",
-    width: "25%",
-    aspectRatio: 1,
-    boxShadow:
-      "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
-  },
-  centerNavItem: {
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-    // top: -15,
+    borderTopRightRadius: 36,
+    paddingHorizontal: 10,
+    elevation: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   navItem: {
-    justifyContent: "space-evenly",
     alignItems: "center",
-    width: "15%",
-    height: 60,
+    justifyContent: "center",
+    width: "20%",
+    position: "relative",
   },
-  navText: {
-    fontSize: 10,
+  iconContainer: {
+    alignItems: "center",
   },
-  centerNavText: {
+  icon: {
+    width: 25,
+    height: 25,
+    tintColor: "#555",
+  },
+  activeIcon: {
+    tintColor: "#fff",
+  },
+  label: {
     fontSize: 12,
+    marginTop: 5,
+    color: "#555",
+    fontWeight: "500",
+  },
+  activeLabel: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+  activeIndicator: {
+    position: "absolute",
+    bottom: 5,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#fff",
   },
 });

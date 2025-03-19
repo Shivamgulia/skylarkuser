@@ -1,279 +1,247 @@
-import {
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View, ScrollView } from "react-native";
 import React from "react";
-import Navbar from "../components/UI/Navbar";
 import Icon from "react-native-vector-icons/Ionicons";
-import IconF from "react-native-vector-icons/FontAwesome";
-import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Icon6 from "react-native-vector-icons/FontAwesome6";
 import { useNavigation } from "@react-navigation/native";
-import { ScrollView } from "react-native";
+import Navbar from "../components/UI/Navbar";
+
+const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
 export default function Session() {
   const navigation = useNavigation();
+
+  const exerciseData = [
+    {
+      title: "Dynamic Warmup : 6 min",
+      data: [
+        { image: require("../../assets/homeimages/strength.webp"), text: "Side Stretches Left", time: "8X" },
+        { image: require("../../assets/homeimages/strength.webp"), text: "Side Stretches Right", time: "8X" },
+        { image: require("../../assets/homeimages/strength.webp"), text: "Cobra", time: "8X" },
+      ]
+    },
+    {
+      title: "Interval : 15 min",
+      data: [
+        { image: require("../../assets/homeimages/strength.webp"), text: "Side Stretches Left", time: "8X" },
+        { image: require("../../assets/homeimages/strength.webp"), text: "Side Stretches Right", time: "8X" },
+        { image: require("../../assets/homeimages/strength.webp"), text: "Cobra", time: "8X" },
+      ]
+    }
+  ];
+
   return (
-    <View style={styles.cont}>
-      <ScrollView style={styles.cont}>
-        <View style={styles.main}>
+    <View style={styles.container}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header Image Section */}
+        <View style={styles.imageContainer}>
           <Image
-            source={require("../../assets/homeimages/yoga.png")}
+            source={require("../../assets/homeimages/strength.webp")}
             style={styles.topImage}
+            resizeMode="cover"
           />
           <View style={styles.overlay}>
-            <View style={styles.topbutton}>
+            {/* Navigation Buttons */}
+            <View style={styles.headerButtons}>
               <Pressable
-                onPress={() => {
-                  navigation.navigate("Base");
-                }}
-                style={{
-                  backgroundColor: "black",
-                  padding: 10,
-                  borderRadius: "50%",
-                }}
+                onPress={() => navigation.goBack()}
+                style={styles.backButton}
               >
-                <Icon name="chevron-back" size={15} color="white" />
+                <Icon name="chevron-back" size={windowWidth * 0.04} color="white" />
               </Pressable>
-              <View
-                style={{
-                  backgroundColor: "black",
-                  padding: 10,
-                  borderRadius: "50%",
-                }}
-              >
-                <Icon name="settings-outline" size={15} color="white" />
-              </View>
+              <Pressable style={styles.settingsButton}>
+                <Icon name="settings-outline" size={windowWidth * 0.04} color="white" />
+              </Pressable>
             </View>
 
-            {/*  */}
-            <View>
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 34,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                Strength
-              </Text>
-              <Text
-                style={{ color: "white", fontSize: 30, textAlign: "center" }}
-              >
-                Trainer Alex
-              </Text>
+            {/* Exercise Info */}
+            <View style={styles.exerciseInfo}>
+              <Text style={styles.exerciseTitle}>Strength</Text>
+              <Text style={styles.trainerName}>Trainer Alex</Text>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingHorizontal: 40,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 5,
-                }}
-              >
-                <Icon5 name="clock" size={15} color="#8888e9" />
-                <Text style={{ color: "white", fontSize: 14 }}>25 min</Text>
+
+            {/* Duration and Calories */}
+            <View style={styles.metaContainer}>
+              <View style={styles.metaItem}>
+                <Icon name="time-outline" size={windowWidth * 0.04} color="#8888e9" />
+                <Text style={styles.metaText}>25 min</Text>
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 5,
-                }}
-              >
-                <Icon6 name="bolt-lightning" size={15} color="#8888e9" />
-                <Text style={{ color: "white", fontSize: 14 }}>560 kcal</Text>
+              <View style={styles.metaItem}>
+                <Icon6 name="bolt-lightning" size={windowWidth * 0.04} color="#8888e9" />
+                <Text style={styles.metaText}>560 kcal</Text>
               </View>
             </View>
-            {/*  */}
           </View>
         </View>
 
-        <View style={{ gap: 15 }}>
-          <Text style={{ color: "white" }}>Dynamic Warmup : 6 min</Text>
-          <View style={{ gap: 15, backgroundColor: "black" }}>
+        {/* Exercise List */}
+        {exerciseData.map((section, index) => (
+          <View key={index} style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>{section.title}</Text>
             <FlatList
-              data={[
-                {
-                  image: require("../../assets/homeimages/yoga.png"),
-                  text: "Side Streches Left",
-                  time: "8X",
-                },
-                {
-                  image: require("../../assets/homeimages/yoga.png"),
-                  text: "Side Streches Roght",
-                  time: "8X",
-                },
-                {
-                  image: require("../../assets/homeimages/yoga.png"),
-                  text: "Cobra",
-                  time: "8X",
-                },
-              ]}
-              keyExtractor={(item) => {
-                item.text;
-              }}
-              renderItem={({ item }) => {
-                return (
-                  <View style={styles.exItem}>
-                    <Image
-                      source={item.image}
-                      style={{
-                        width: 117,
-                        height: 96,
-                      }}
-                    />
-                    <View style={{ justifyContent: "center" }}>
-                      <Text style={{ color: "white" }}>{item.text}</Text>
-                      <Text style={{ color: "white" }}>{item.time}</Text>
-                    </View>
+              data={section.data}
+              keyExtractor={(item) => item.text}
+              renderItem={({ item }) => (
+                <View style={styles.exerciseItem}>
+                  <Image
+                    source={item.image}
+                    style={styles.exerciseImage}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.exerciseDetails}>
+                    <Text style={styles.exerciseName}>{item.text}</Text>
+                    <Text style={styles.exerciseDuration}>{item.time}</Text>
                   </View>
-                );
-              }}
+                </View>
+              )}
             />
           </View>
-        </View>
-        <View style={{ gap: 15 }}>
-          <Text style={{ color: "white" }}>Interval : 15 min</Text>
-          <View style={{ gap: 15, backgroundColor: "black" }}>
-            <FlatList
-              data={[
-                {
-                  image: require("../../assets/homeimages/yoga.png"),
-                  text: "Side Streches Left",
-                  time: "8X",
-                },
-                {
-                  image: require("../../assets/homeimages/yoga.png"),
-                  text: "Side Streches Roght",
-                  time: "8X",
-                },
-                {
-                  image: require("../../assets/homeimages/yoga.png"),
-                  text: "Cobra",
-                  time: "8X",
-                },
-              ]}
-              keyExtractor={(item) => {
-                item.text;
-              }}
-              renderItem={({ item }) => {
-                return (
-                  <View style={styles.exItem}>
-                    <Image
-                      source={item.image}
-                      style={{
-                        width: 117,
-                        height: 96,
-                      }}
-                    />
-                    <View style={{ justifyContent: "center" }}>
-                      <Text style={{ color: "white" }}>{item.text}</Text>
-                      <Text style={{ color: "white" }}>{item.time}</Text>
-                    </View>
-                  </View>
-                );
-              }}
-            />
-          </View>
-        </View>
+        ))}
+        
+        {/* Spacer for bottom buttons */}
+        <View style={{ height: windowHeight * 0.1 }} />
       </ScrollView>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100%",
-          flexDirection: "row",
-          height: 66,
-          alignItems: "center",
-          gap: 20,
-        }}
-      >
-        <Pressable
-          onPress={() => {}}
-          style={{
-            backgroundColor: "#8288E8",
-            // width: 307,
-            height: 61,
-            marginLeft: 10,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 36,
-            flex: 8,
-          }}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 20,
-              fontWeight: "bold",
-            }}
-          >
-            Start Workout
-          </Text>
+
+      {/* Bottom Control Bar */}
+      <View style={styles.bottomBar}>
+        <Pressable style={styles.startButton} onPress={() => {}}>
+          <Text style={styles.startButtonText}>Start Workout</Text>
         </Pressable>
-
-        <View
-          style={{
-            padding: 10,
-            borderRadius: "50%",
-            backgroundColor: "#414339",
-            flex: 1,
-            aspectRatio: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            marginRight: 10,
-          }}
-        >
-          <Icon6 name="music" size={20} color="white" />
-        </View>
-
-        {/* <Navbar /> */}
+        <Pressable style={styles.musicButton}>
+          <Icon6 name="music" size={windowWidth * 0.05} color="white" />
+        </Pressable>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  cont: {
+  container: {
     flex: 1,
-    // paddingTop: 50,
     backgroundColor: "#1d1d1d",
-    gap: 15,
   },
-  main: {},
+  scrollContent: {
+    paddingBottom: windowHeight * 0.1,
+  },
+  imageContainer: {
+    height: windowHeight * 0.4,
+  },
   topImage: {
-    width: 412,
-    height: 370,
+    width: '100%',
+    height: '100%',
   },
   overlay: {
-    position: "absolute",
-    justifyContent: "space-between",
-    height: 350,
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'space-between',
+    paddingTop: windowHeight * 0.05,
+    paddingBottom: windowHeight * 0.03,
   },
-  topbutton: {
-    paddingTop: 50,
-    width: "100%",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-    flexDirection: "row",
+  headerButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: windowWidth * 0.04,
   },
-  exItem: {
-    flexDirection: "row",
-    gap: 20,
-    marginVertical: 5,
+  backButton: {
+    backgroundColor: 'black',
+    padding: windowWidth * 0.03,
+    borderRadius: windowWidth * 0.5,
+  },
+  settingsButton: {
+    backgroundColor: 'black',
+    padding: windowWidth * 0.03,
+    borderRadius: windowWidth * 0.5,
+  },
+  exerciseInfo: {
+    alignItems: 'center',
+  },
+  exerciseTitle: {
+    color: 'white',
+    fontSize: windowWidth * 0.08,
+    fontWeight: 'bold',
+    marginBottom: windowHeight * 0.005,
+  },
+  trainerName: {
+    color: 'white',
+    fontSize: windowWidth * 0.06,
+  },
+  metaContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: windowWidth * 0.1,
+  },
+  metaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: windowWidth * 0.02,
+  },
+  metaText: {
+    color: 'white',
+    fontSize: windowWidth * 0.035,
+  },
+  sectionContainer: {
+    marginTop: windowHeight * 0.03,
+    paddingHorizontal: windowWidth * 0.04,
+  },
+  sectionTitle: {
+    color: 'white',
+    fontSize: windowWidth * 0.045,
+    marginBottom: windowHeight * 0.02,
+  },
+  exerciseItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: windowHeight * 0.02,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 10,
+    padding: windowWidth * 0.03,
+  },
+  exerciseImage: {
+    width: windowWidth * 0.3,
+    height: windowWidth * 0.25,
+    borderRadius: 8,
+  },
+  exerciseDetails: {
+    flex: 1,
+    marginLeft: windowWidth * 0.04,
+  },
+  exerciseName: {
+    color: 'white',
+    fontSize: windowWidth * 0.04,
+    marginBottom: windowHeight * 0.005,
+  },
+  exerciseDuration: {
+    color: 'white',
+    fontSize: windowWidth * 0.035,
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: windowWidth * 0.04,
+    backgroundColor: '#1d1d1d',
+  },
+  startButton: {
+    flex: 1,
+    backgroundColor: '#8288E8',
+    height: windowHeight * 0.07,
+    borderRadius: windowHeight * 0.035,
+    justifyContent: 'center',
+    marginRight: windowWidth * 0.03,
+  },
+  startButtonText: {
+    color: 'white',
+    fontSize: windowWidth * 0.045,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  musicButton: {
+    backgroundColor: '#414339',
+    padding: windowWidth * 0.04,
+    borderRadius: windowWidth * 0.5,
+    aspectRatio: 1,
   },
 });

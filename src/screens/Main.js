@@ -42,10 +42,16 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontWeight: 500,
     paddingRight: 10,
+    marginRight: '12',
+    textShadowColor: "white", 
+    textShadowOffset: { width: -1, height: 1 }, 
+    textShadowRadius: 2, 
   },
   headTwo: {
     fontWeight: 500,
     paddingRight: 10,
+    fontWeight: 'bold',
+    marginRight: '12'
   },
   bottomButton: {
     alignItems: "center",
@@ -53,5 +59,7 @@ const styles = StyleSheet.create({
   bottomText: {
     color: "white",
     paddingBottom: 10,
+    fontWeight: 'bold',
+    marginBottom: '16'
   },
 });

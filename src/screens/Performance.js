@@ -1,9 +1,7 @@
 import {
   FlatList,
-  FlatListComponent,
   Image,
   SafeAreaView,
-  SafeAreaViewBase,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,7 +10,6 @@ import {
 import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Navbar from "../components/UI/Navbar";
-
 import { Dimensions } from "react-native";
 
 const windowWidth = Dimensions.get("window").width;
@@ -20,230 +17,116 @@ const windowHeight = Dimensions.get("window").height;
 
 export default function Performance() {
   const topList = ["Workout", "Fitness", "Strength", "Training"];
+  
   return (
-    <SafeAreaView style={styles.cont}>
-      <ScrollView style={styles.cont}>
-        <View style={{ marginTop: 30, marginBottom: 20 }}>
+    <SafeAreaView style={[styles.container, { marginTop: 20 }]}>
+      <ScrollView 
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Top Categories List */}
+        <View style={styles.topListContainer}>
           <FlatList
             data={topList}
             keyExtractor={(item) => item}
             horizontal
             showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => {
-              return (
-                <View
-                  style={{
-                    backgroundColor: "black",
-                    marginHorizontal: 10,
-                    height: 37,
-                    width: 106,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 10,
-                  }}
-                >
-                  <Text style={{ color: "white", fontSize: 16 }}>{item}</Text>
-                </View>
-              );
-            }}
+            contentContainerStyle={styles.topListContent}
+            renderItem={({ item }) => (
+              <View style={styles.topListItem}>
+                <Text style={styles.topListText}>{item}</Text>
+              </View>
+            )}
           />
         </View>
-        <View
-          style={{
-            borderBottomColor: "black",
-            borderBottomWidth: 1,
-            marginHorizontal: 10,
-          }}
-        />
-        <View
-          style={{
-            marginHorizontal: 10,
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            marginVertical: 10,
-          }}
-        >
-          <View
-            style={{
-              borderRightWidth: 1,
-              width: (windowWidth - 30) / 3,
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "row",
-              gap: 10,
-            }}
-          >
+
+        <View style={styles.divider} />
+
+        {/* Filter/Sort/Search Row */}
+        <View style={styles.filterRow}>
+          <View style={[styles.filterItem, styles.bordered]}>
             <Icon name="filter" size={16} />
-            <Text style={{ fontWeight: "bold" }}>Filter</Text>
+            <Text style={styles.filterText}>Filter</Text>
           </View>
-          <View
-            style={{
-              borderRightWidth: 1,
-              width: (windowWidth - 30) / 3,
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "row",
-              gap: 10,
-            }}
-          >
+          <View style={[styles.filterItem, styles.bordered]}>
             <Icon name="bars" size={16} />
-            <Text style={{ fontWeight: "bold" }}>Sorting</Text>
+            <Text style={styles.filterText}>Sorting</Text>
           </View>
-          <View
-            style={{
-              width: (windowWidth - 30) / 3,
-              gap: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <View style={styles.filterItem}>
             <Icon name="search" size={16} />
-            <Text style={{ fontWeight: "bold" }}>Search</Text>
+            <Text style={styles.filterText}>Search</Text>
           </View>
         </View>
 
-        <View
-          style={{
-            backgroundColor: "#EFEFEF",
-            marginHorizontal: 50,
-            marginVertical: 40,
-            borderRadius: 14,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingVertical: 10,
-              paddingHorizontal: 30,
-            }}
-          >
-            <View style={{ width: windowWidth / 2.7 }}>
-              <Text style={{ fontSize: 24, fontWeight: "bold" }}>Scan Me</Text>
-              <Text style={{ fontSize: 14 }}>
+        {/* QR Code Section */}
+        <View style={styles.qrContainer}>
+          <View style={styles.qrContent}>
+            <View style={styles.qrTextContainer}>
+              <Text style={styles.qrTitle}>Scan Me</Text>
+              <Text style={styles.qrSubtitle}>
                 Scan the QR code to book your online classes
               </Text>
             </View>
             <Image
               source={require("../../assets/performance/qr.png")}
-              style={{
-                width: windowHeight / 8,
-                aspectRatio: 1,
-                position: "relative",
-                top: 50,
-                zIndex: 2,
-              }}
+              style={styles.qrImage}
             />
           </View>
-          <View
-            style={{
-              backgroundColor: "black",
-              height: 60,
-              borderBottomRightRadius: 14,
-              borderBottomStartRadius: 14,
-            }}
-          ></View>
+          <View style={styles.qrBottomBar} />
         </View>
 
-        <View
-          style={{
-            marginHorizontal: 10,
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            marginVertical: 10,
-          }}
-        >
-          <FlatList
-            data={[
-              {
-                id: 1,
-                text: "Total Body Strength",
-                time: "45 min",
-                image: require("../../assets/performance/yoga.png"),
-              },
-              {
-                id: 2,
-                text: "Total Body Strength",
-                time: "45 min",
-                image: require("../../assets/performance/yoga2.png"),
-              },
-              {
-                id: 3,
-                text: "Total Body Strength",
-                time: "45 min",
-                image: require("../../assets/performance/yoga3.png"),
-              },
-              {
-                id: 4,
-                text: "Total Body Strength",
-                time: "45 min",
-                image: require("../../assets/performance/cardio.png"),
-              },
-            ]}
-            keyExtractor={(item) => {
-              return item.id;
-            }}
-            numColumns={2}
-            renderItem={({ item }) => {
-              return (
-                <View
-                  style={{
-                    borderRadius: 14,
-                    marginHorizontal: (windowWidth - 264) / 20,
-                    marginVertical: 5,
-                  }}
-                >
-                  <Image
-                    source={item.image}
-                    style={{
-                      width: 182,
-                      height: 217,
-                      objectFit: "fill",
-                      borderBottomRightRadius: 14,
+        {/* Workout List */}
+        <FlatList
+          data={[
+            {
+              id: 1,
+              text: "Total Body Strength",
+              time: "45 min",
+              image: require("../../assets/performance/yoga.jpeg"),
+            },
+            {
+              id: 2,
+              text: "Total Body Strength",
+              time: "45 min",
+              image: require("../../assets/performance/yoga2.webp"),
+            },
+            {
+              id: 3,
+              text: "Total Body Strength",
+              time: "45 min",
+              image: require("../../assets/performance/yoga3.png"),
+            },
+            {
+              id: 4,
+              text: "Total Body Strength",
+              time: "45 min",
+              image: require("../../assets/performance/cardio.png"),
+            },
+            
+          ]}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          contentContainerStyle={styles.workoutList}
+          renderItem={({ item }) => (
+            <View style={styles.workoutItem}>
+              <Image
+                source={item.image}
+                style={styles.workoutImage}
+              />
+              <View style={styles.workoutInfo}>
+                <Text style={styles.workoutText}>{item.text}</Text>
+                <Text style={styles.workoutTime}>{item.time}</Text>
+              </View>
+            </View>
+          )}
+        />
 
-                      borderBottomLeftRadius: 14,
-                    }}
-                  />
-                  <View
-                    style={{
-                      backgroundColor: "black",
-                      position: "absolute",
-                      width: 182,
-                      height: 86,
-                      bottom: 0,
-                      justifyContent: "center",
-                      paddingLeft: 20,
-                      borderBottomRightRadius: 14,
-
-                      borderBottomLeftRadius: 14,
-                    }}
-                  >
-                    <Text style={{ color: "white" }}>{item.text}</Text>
-                    <Text
-                      style={{ color: "white", paddingLeft: 22, paddingTop: 5 }}
-                    >
-                      {item.time}
-                    </Text>
-                  </View>
-                </View>
-              );
-            }}
-          />
-        </View>
-        <View style={{ height: 150 }}></View>
+        {/* Spacer for bottom navbar */}
+        <View style={styles.spacer} />
       </ScrollView>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 0,
-          backgroundColor: "#8288E8",
-          width: "100%",
-          height: 66,
-        }}
-      >
+
+      {/* Bottom Navbar */}
+      <View style={styles.navbarContainer}>
         <Navbar />
       </View>
     </SafeAreaView>
@@ -251,9 +134,125 @@ export default function Performance() {
 }
 
 const styles = StyleSheet.create({
-  cont: {
-    backgroundColor: "white",
-    paddingTop: 25,
+  container: {
     flex: 1,
+    backgroundColor: "white",
   },
+  scrollContent: {
+    paddingTop: 25,
+    paddingBottom: 100, // Space for bottom navbar
+  },
+  topListContainer: {
+    marginVertical: 20,
+  },
+  topListContent: {
+    paddingHorizontal: 10,
+  },
+  topListItem: {
+    backgroundColor: "black",
+    marginHorizontal: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    minWidth: windowWidth * 0.22, // Responsive minimum width
+  },
+  topListText: {
+    color: "white",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  divider: {
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
+    marginHorizontal: 10,
+  },
+  filterRow: {
+    flexDirection: "row",
+    marginVertical: 16,
+    marginHorizontal: 10,
+  },
+  filterItem: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 10,
+  },
+  bordered: {
+    borderRightWidth: 1,
+    borderColor: "black",
+  },
+  filterText: {
+    fontWeight: "bold",
+  },
+  qrContainer: {
+    backgroundColor: "#EFEFEF",
+    marginHorizontal: 20,
+    marginVertical: 25,
+    borderRadius: 14,
+  },
+  qrContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 20,
+  },
+  qrTextContainer: {
+    flex: 1,
+    marginRight: 10,
+  },
+  qrTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  qrSubtitle: {
+    fontSize: 14,
+  },
+  qrImage: {
+    width: windowWidth * 0.25,
+    aspectRatio: 1,
+  },
+  qrBottomBar: {
+    backgroundColor: "black",
+    height: 60,
+    borderBottomLeftRadius: 14,
+    borderBottomRightRadius: 14,
+  },
+  workoutList: {
+    paddingHorizontal: 10,
+  },
+  workoutItem: {
+    flex: 1,
+    margin: 8,
+    borderRadius: 14,
+    overflow: "hidden",
+    maxWidth: (windowWidth - 40) / 2, // Two columns with margins
+    maxHeight : '200'
+  },
+  workoutImage: {
+    maxWidth: (windowWidth - 40) / 2, // Two columns with margins
+    maxHeight : '200'
+  },
+  workoutInfo: {
+    backgroundColor: "black",
+    padding: 8,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  workoutText: {
+    color: "white",
+    fontWeight: 'bold'
+  },
+  workoutTime: {
+    color: "white",
+    paddingTop: 5,
+    fontWeight: 'bold'
+  },
+  spacer: {
+    height: 50,
+  },
+  
 });

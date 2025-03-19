@@ -1,7 +1,5 @@
 import { StyleSheet, Pressable, Text } from "react-native";
-
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import React from "react";
 import Main from "../screens/Main";
 import SelectLogin from "../screens/SelectLogin";
@@ -13,6 +11,9 @@ import Session from "../screens/Session";
 import Performance from "../screens/Performance";
 import Profile from "../screens/Profile";
 import Classes from "../screens/Classes";
+import CategoriesDetails from "../screens/CategoriesDetails"; // Updated import
+import OnlineYourClass from "../screens/OnlineYourClass"; // Updated import
+import ScoreDetailsScreen from "../screens/ScoreDetailsScreen"; // Updated import
 
 const Stack = createNativeStackNavigator();
 
@@ -69,6 +70,22 @@ const AuthStack = () => {
         component={Classes}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="CategoriesDetails" // Updated screen name
+        component={CategoriesDetails} // Updated component
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OnlineYourClass" // Updated screen name
+        component={OnlineYourClass} // Updated component
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ScoreDetailsScreen" // Updated screen name
+        component={ScoreDetailsScreen} // Updated component
+        options={{ headerShown: false }}
+      />
+      
     </Stack.Navigator>
   );
 };

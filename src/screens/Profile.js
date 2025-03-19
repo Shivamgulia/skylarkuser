@@ -1,298 +1,518 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Pressable
+} from "react-native";
 import React from "react";
 import Navbar from "../components/UI/Navbar";
 
-export default function Profile() {
-  return (
-    <View style={{ paddingTop: 50, flex: 1, backgroundColor: "white" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 20,
-          paddingHorizontal: 20,
-        }}
-      >
-        <Image source={require("../../assets/profile/profile.png")} />
-        <View>
-          <Text style={{ fontSize: 24, fontWeight: "bold" }}>Hello Neha!</Text>
-          <Text style={{ fontSize: 14 }}>Lets Start Your Day</Text>
-        </View>
-      </View>
+const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
-      <View
-        style={{
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          flexDirection: "row",
-          marginVertical: 20,
-        }}
+export default function Profile() {
+  // Mock data - replace with actual data from your state/API
+  const subscriptionActive = true;
+  const paymentHistory = [
+    { id: 1, date: "2024-03-15", amount: "₹1299", plan: "Premium Annual" },
+    { id: 2, date: "2023-03-15", amount: "₹1299", plan: "Premium Annual" },
+  ];
+
+  return (
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={{ color: "#B3AFAF", fontSize: 14 }}>9</Text>
-        <Text style={{ color: "#646363", fontSize: 16 }}>10</Text>
-        <Text style={{ color: "#000000", fontSize: 20 }}>11</Text>
-        <Text
-          style={{
-            color: "white",
-            fontSize: 15,
-            backgroundColor: "black",
-            alignSelf: "center",
-            paddingVertical: 3,
-            paddingHorizontal: 20,
-            borderRadius: 22,
-          }}
-        >
-          Tuesday, 12 Nov
-        </Text>
-        <Text style={{ color: "#000000", fontSize: 20 }}>13</Text>
-        <Text style={{ color: "#646363", fontSize: 16 }}>14</Text>
-        <Text style={{ color: "#B3AFAF", fontSize: 14 }}>15</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-        <View style={{ paddingLeft: 0 }}>
-          <Text style={{ fontSize: 15, fontWeight: "bold" }}>Daily Steps</Text>
-          <Text style={{ fontSize: 43, color: "#7372BD" }}>5000</Text>
-          <Text style={{ fontSize: 14, color: "#646363" }}>steps</Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: "#BFBFBF",
-            aspectRatio: 1,
-            width: "30%",
-            borderRadius: "50%",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#7372BD",
-              aspectRatio: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: "50%",
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "white",
-                aspectRatio: 1,
-                width: "80%",
-                borderRadius: "50%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 16, fontWeight: "bold" }}>40%</Text>
-              <Text style={{ fontSize: 8 }}>From 100%</Text>
-            </View>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <Image
+            source={require("../../assets/profile/profile.png")}
+            style={styles.profileImage}
+          />
+          <View>
+            <Text style={styles.profileName}>Hello Neha!</Text>
+            <Text style={styles.profileSubtitle}>Lets Start Your Day</Text>
           </View>
         </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          marginVertical: 20,
-        }}
-      >
-        <View>
-          <Image source={require("../../assets/profile/leftrec.png")} />
-          <View
-            style={{
-              position: "absolute",
-              paddingLeft: 30,
-              paddingTop: 10,
-            }}
-          >
-            <Text style={{ color: "white", fontSize: 13 }}>Last Month</Text>
-            <Text style={{ color: "white", fontSize: 15, fontWeight: "bold" }}>
-              1000 steps
+
+        {/* Date Navigation */}
+        <View style={styles.dateContainer}>
+          {[9, 10, 11, 12, 13, 14, 15].map((date, index) => (
+            <Text
+              key={date}
+              style={[
+                styles.dateText,
+                index === 3 && styles.currentDate,
+                index < 3 && styles.pastDate,
+                index > 3 && styles.futureDate
+              ]}
+            >
+              {index === 3 ? 'Tue, 12 Nov' : date}
             </Text>
+          ))}
+        </View>
+
+        {/* Steps Progress */}
+        <View style={styles.stepsContainer}>
+          <View style={styles.stepsTextContainer}>
+            <Text style={styles.stepsTitle}>Daily Steps</Text>
+            <Text style={styles.stepsCount}>5000</Text>
+            <Text style={styles.stepsLabel}>steps</Text>
+          </View>
+
+          {/* Progress Circle */}
+          <View style={styles.progressContainer}>
+            <View style={styles.progressOuter}>
+              <View style={styles.progressMiddle}>
+                <View style={styles.progressInner}>
+                  <Text style={styles.progressText}>40%</Text>
+                  <Text style={styles.progressSubtext}>From 100%</Text>
+                </View>
+              </View>
+            </View>
           </View>
         </View>
-        <View>
-          <Image source={require("../../assets/profile/rightrec.png")} />
-          <View
-            style={{
-              position: "absolute",
-              paddingLeft: 60,
-              paddingTop: 10,
-            }}
-          >
-            <Text style={{ color: "white", fontSize: 13 }}>This Month</Text>
-            <Text style={{ color: "white", fontSize: 15, fontWeight: "bold" }}>
-              5000 steps
+
+        {/* Monthly Comparison */}
+        <View style={styles.comparisonContainer}>
+          <View style={styles.comparisonCard}>
+            <Image
+              source={require("../../assets/profile/leftrec.png")}
+              style={styles.comparisonImage}
+              resizeMode="contain"
+            />
+            <View style={styles.comparisonText}>
+              <Text style={styles.comparisonLabel}>Last Month</Text>
+              <Text style={styles.comparisonValue}>1000 steps</Text>
+            </View>
+          </View>
+
+          <View style={styles.comparisonCard}>
+            <Image
+              source={require("../../assets/profile/rightrec.png")}
+              style={styles.comparisonImage}
+              resizeMode="contain"
+            />
+            <View style={styles.comparisonText}>
+              <Text style={styles.comparisonLabel}>This Month</Text>
+              <Text style={styles.comparisonValue}>5000 steps</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Statistics Section */}
+        <Text style={styles.sectionTitle}>Statistics</Text>
+        <View style={styles.statsContainer}>
+          {/* Heart Rate Card */}
+          <View style={styles.statsCard}>
+            <View style={styles.iconContainer}>
+              <Image
+                source={require("../../assets/profile/heart.png")}
+                resizeMode="contain"
+              />
+            </View>
+            <Text style={styles.statsTitle}>Heart</Text>
+            <Image
+              source={require("../../assets/profile/heartrate.png")}
+              style={styles.statsImage}
+              resizeMode="contain"
+            />
+            <View style={styles.statsValueContainer}>
+              <Text style={styles.statsValue}>100</Text>
+              <Text style={styles.statsUnit}>BPM</Text>
+            </View>
+          </View>
+
+          {/* Calories & Water Cards */}
+          <View style={styles.rightColumn}>
+            <View style={styles.statsCard}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.statsTitle}>Calories</Text>
+                <View style={styles.iconContainer}>
+                  <Image
+                    source={require("../../assets/profile/fire.png")}
+                    resizeMode="contain"
+                  />
+                </View>
+              </View>
+              <View style={styles.statsValueContainer}>
+                <Text style={styles.statsValue}>800</Text>
+                <Text style={styles.statsUnit}>Kcal</Text>
+              </View>
+            </View>
+
+            <View style={styles.statsCard}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.statsTitle}>Water</Text>
+                <View style={styles.iconContainer}>
+                  <Image
+                    source={require("../../assets/profile/drop.png")}
+                    resizeMode="contain"
+                  />
+                </View>
+              </View>
+              <View style={styles.statsValueContainer}>
+                <Text style={styles.statsValue}>1.9</Text>
+                <Text style={styles.statsUnit}>Liters</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Sleep Time Card */}
+        <View style={[styles.statsCard, styles.sleepCard]}>
+          <View style={styles.cardHeader}>
+            <View style={styles.iconContainer}>
+              <Image
+                source={require("../../assets/profile/moon.png")}
+                resizeMode="contain"
+              />
+            </View>
+            <Text style={styles.statsTitle}>SleepTime</Text>
+          </View>
+          <Text style={styles.sleepTime}>7h10m</Text>
+        </View>
+
+        {/* BMI Container */}
+        <View style={styles.statsCard}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.statsTitle}>BMI</Text>
+            <View style={styles.iconContainer}>
+              <Image
+                source={require("../../assets/profile/bmi.png")}
+                resizeMode="contain"
+                style={styles.bmiIcon}  
+              />
+            </View>
+          </View>
+          <View style={styles.statsValueContainer}>
+            <Text style={styles.statsValue}>22.5</Text>
+            <Text style={styles.statsUnit}>kg/m²</Text>
+          </View>
+          <View style={styles.bmiCategory}>
+            <Text style={styles.bmiCategoryText}>Normal</Text>
+          </View>
+        </View>
+
+        {/* Subscription Status Section */}
+        <Text style={styles.sectionTitle}>Subscription Status</Text>
+        <View style={styles.subscriptionContainer}>
+          <Text style={styles.subscriptionText}>
+            {subscriptionActive ? 'Active Premium Member' : 'No Active Subscription'}
+          </Text>
+          <Pressable style={styles.subscriptionButton}>
+            <Text style={styles.buttonText}>
+              {subscriptionActive ? 'Manage Subscription' : 'Upgrade Now'}
             </Text>
-          </View>
+          </Pressable>
         </View>
-      </View>
-      <Text>Statictics</Text>
-      <View style={{ gap: 10 }}>
-        <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-          <View
-            style={{
-              backgroundColor: "#F1F2F6",
-              paddingVertical: 20,
-              paddingHorizontal: 10,
-              borderRadius: 13,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "white",
-                borderRadius: "50%",
-                width: 25,
-                aspectRatio: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Image source={require("../../assets/profile/heart.png")} />
-            </View>
-            <View>
-              <Text style={{ fontSize: 16, fontWeight: "bold" }}>Heart</Text>
-              <Image source={require("../../assets/profile/heartrate.png")} />
-            </View>
-            <View
-              style={{ flexDirection: "row", alignItems: "flex-end", gap: 10 }}
-            >
-              <Text style={{ fontSize: 30, fontWeight: "bold" }}>100</Text>
-              <Text style={{ fontSize: 16, fontWeight: "bold" }}>BPM</Text>
-            </View>
-          </View>
-          <View style={{ gap: 10 }}>
-            <View
-              style={{
-                backgroundColor: "#F1F2F6",
-                paddingVertical: 20,
-                paddingHorizontal: 10,
-                borderRadius: 13,
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 80 }}>
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  Calerois
-                </Text>
-                <View
-                  style={{
-                    backgroundColor: "white",
-                    borderRadius: "50%",
-                    width: 25,
-                    aspectRatio: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image source={require("../../assets/profile/fire.png")} />
-                </View>
+
+        {/* Payment History Section */}
+        <Text style={styles.sectionTitle}>Payment History</Text>
+        <View style={styles.paymentHistoryContainer}>
+          {paymentHistory.map((payment) => (
+            <View key={payment.id} style={styles.paymentCard}>
+              <View>
+                <Text style={styles.paymentDate}>{payment.date}</Text>
+                <Text style={styles.paymentPlan}>{payment.plan}</Text>
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "flex-end",
-                  gap: 10,
-                }}
-              >
-                <Text style={{ fontSize: 30, fontWeight: "bold" }}>800</Text>
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>Kcal</Text>
+              <View style={styles.paymentActions}>
+                <Text style={styles.paymentAmount}>{payment.amount}</Text>
+                <Pressable style={styles.downloadButton}>
+                  <Text style={styles.downloadText}>Download Receipt</Text>
+                </Pressable>
               </View>
             </View>
-            <View
-              style={{
-                backgroundColor: "#F1F2F6",
-                paddingVertical: 20,
-                paddingHorizontal: 10,
-                borderRadius: 13,
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 80 }}>
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>Water</Text>
-                <View
-                  style={{
-                    backgroundColor: "white",
-                    borderRadius: "50%",
-                    width: 25,
-                    aspectRatio: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image source={require("../../assets/profile/drop.png")} />
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "flex-end",
-                  gap: 10,
-                }}
-              >
-                <Text style={{ fontSize: 30, fontWeight: "bold" }}>1.9</Text>
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>Liters</Text>
-              </View>
-            </View>
-          </View>
+          ))}
         </View>
-        <View>
-          <View
-            style={{
-              backgroundColor: "#F1F2F6",
-              paddingVertical: 20,
-              paddingHorizontal: 10,
-              borderRadius: 13,
-              marginHorizontal: 10,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingHorizontal: 20,
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <View
-                  style={{
-                    backgroundColor: "white",
-                    borderRadius: "50%",
-                    width: 25,
-                    aspectRatio: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image source={require("../../assets/profile/moon.png")} />
-                </View>
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  SleepTime
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "flex-end",
-                  gap: 10,
-                }}
-              >
-                <Text style={{ fontSize: 30, fontWeight: "bold" }}>7h10m</Text>
-                {/* <Text style={{ fontSize: 16, fontWeight: "bold" }}>BPM</Text> */}
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 0,
-          backgroundColor: "#8288E8",
-          width: "100%",
-          height: 66,
-        }}
-      >
+
+
+
+        {/* Spacer for navbar */}
+        <View style={{ height: windowHeight * 0.1 }} />
+      </ScrollView>
+
+      {/* Fixed Navbar */}
+      <View style={styles.navbar}>
         <Navbar />
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  scrollContent: {
+    paddingTop: windowHeight * 0.06,
+    paddingHorizontal: windowWidth * 0.04,
+    paddingBottom: windowHeight * 0.02,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: windowWidth * 0.05,
+    marginBottom: windowHeight * 0.03,
+  },
+  profileImage: {
+    width: windowWidth * 0.15,
+    height: windowWidth * 0.15,
+    borderRadius: windowWidth * 0.075,
+  },
+  profileName: {
+    fontSize: windowWidth * 0.06,
+    fontWeight: "bold",
+  },
+  profileSubtitle: {
+    fontSize: windowWidth * 0.035,
+    color: "#646363",
+  },
+  dateContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: windowHeight * 0.02,
+  },
+  dateText: {
+    fontSize: windowWidth * 0.035,
+  },
+  currentDate: {
+    backgroundColor: "black",
+    color: "white",
+    borderRadius: windowWidth * 0.03,
+    paddingVertical: windowHeight * 0.005,
+    paddingHorizontal: windowWidth * 0.03,
+  },
+  pastDate: {
+    color: "#B3AFAF",
+  },
+  futureDate: {
+    color: "#646363",
+  },
+  stepsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: windowHeight * 0.03,
+    paddingHorizontal: windowWidth * 0.02,
+  },
+  stepsTextContainer: {
+    flex: 1,
+  },
+  stepsTitle: {
+    fontSize: windowWidth * 0.045,
+    fontWeight: "bold",
+    marginBottom: windowHeight * 0.005,
+  },
+  stepsCount: {
+    fontSize: windowWidth * 0.1,
+    color: "#7372BD",
+    fontWeight: "bold",
+  },
+  stepsLabel: {
+    fontSize: windowWidth * 0.035,
+    color: "#646363",
+  },
+  progressContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  progressOuter: {
+    backgroundColor: "#BFBFBF",
+    width: windowWidth * 0.25,
+    height: windowWidth * 0.25,
+    borderRadius: windowWidth * 0.125,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  progressMiddle: {
+    backgroundColor: "#7372BD",
+    width: "80%",
+    height: "80%",
+    borderRadius: windowWidth * 0.1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  progressInner: {
+    backgroundColor: "white",
+    width: "80%",
+    height: "80%",
+    borderRadius: windowWidth * 0.08,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  progressText: {
+    fontSize: windowWidth * 0.045,
+    fontWeight: "bold",
+  },
+  progressSubtext: {
+    fontSize: windowWidth * 0.025,
+  },
+  comparisonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: windowHeight * 0.03,
+  },
+  comparisonCard: {
+    width: "48%",
+    aspectRatio: 1.5,
+  },
+  comparisonImage: {
+    width: "100%",
+    height: "100%",
+  },
+  comparisonText: {
+    position: "absolute",
+    top: "30%",
+    left: "15%",
+  },
+  comparisonLabel: {
+    color: "white",
+    fontSize: windowWidth * 0.035,
+  },
+  comparisonValue: {
+    color: "white",
+    fontSize: windowWidth * 0.04,
+    fontWeight: "bold",
+    marginTop: windowHeight * 0.005,
+  },
+  sectionTitle: {
+    fontSize: windowWidth * 0.05,
+    fontWeight: "bold",
+    marginVertical: windowHeight * 0.02,
+  },
+  statsContainer: {
+    flexDirection: "row",
+    gap: windowWidth * 0.03,
+    marginBottom: windowHeight * 0.02,
+  },
+  statsCard: {
+    flex: 1,
+    backgroundColor: "#F1F2F6",
+    borderRadius: 13,
+    padding: windowWidth * 0.04,
+    marginBottom: windowHeight * 0.03,
+  },
+  iconContainer: {
+    backgroundColor: "white",
+    borderRadius: windowWidth * 0.5,
+    width: windowWidth * 0.08,
+    height: windowWidth * 0.08,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: windowHeight * 0.01,
+  },
+  statsTitle: {
+    fontSize: windowWidth * 0.04,
+    fontWeight: "bold",
+  },
+  statsImage: {
+    width: "100%",
+    height: windowHeight * 0.05,
+    marginVertical: windowHeight * 0.01,
+  },
+  statsValueContainer: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: windowWidth * 0.02,
+    marginTop: windowHeight * 0.01,
+  },
+  statsValue: {
+    fontSize: windowWidth * 0.07,
+    fontWeight: "bold",
+  },
+  statsUnit: {
+    fontSize: windowWidth * 0.04,
+    fontWeight: "bold",
+    marginBottom: windowHeight * 0.005,
+  },
+  rightColumn: {
+    flex: 1,
+    gap: windowHeight * 0.015,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  sleepCard: {
+    marginBottom: windowHeight * 0.03,
+  },
+  sleepTime: {
+    fontSize: windowWidth * 0.07,
+    fontWeight: "bold",
+    marginTop: windowHeight * 0.01,
+  },
+
+  subscriptionContainer: {
+    backgroundColor: '#F1F2F6',
+    borderRadius: 13,
+    padding: windowWidth * 0.04,
+    marginBottom: windowHeight * 0.03,
+    
+  },
+  subscriptionText: {
+    fontSize: windowWidth * 0.04,
+    fontWeight: 'bold',
+    color: '#7372BD',
+    marginBottom: windowHeight * 0.01,
+  },
+  subscriptionButton: {
+    backgroundColor: '#7372BD',
+    borderRadius: 8,
+    padding: windowWidth * 0.03,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  paymentHistoryContainer: {
+    marginBottom: windowHeight * 0.03,
+  },
+  paymentCard: {
+    backgroundColor: '#F1F2F6',
+    borderRadius: 13,
+    padding: windowWidth * 0.04,
+    marginBottom: windowHeight * 0.015,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  paymentDate: {
+    fontSize: windowWidth * 0.035,
+    color: '#646363',
+  },
+  paymentPlan: {
+    fontSize: windowWidth * 0.04,
+    fontWeight: 'bold',
+  },
+  paymentAmount: {
+    fontSize: windowWidth * 0.045,
+    fontWeight: 'bold',
+    color: '#7372BD',
+    marginBottom: windowHeight * 0.005,
+  },
+  paymentActions: {
+    alignItems: 'flex-end',
+  },
+  downloadButton: {
+    backgroundColor: '#7372BD',
+    borderRadius: 8,
+    paddingVertical: windowHeight * 0.005,
+    paddingHorizontal: windowWidth * 0.03,
+  },
+  downloadText: {
+    color: 'white',
+    fontSize: windowWidth * 0.03,
+  },
+  bmiIcon: {
+    width: 50,  
+    height: 50, 
+
+  },
+});
