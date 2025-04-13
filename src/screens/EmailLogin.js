@@ -32,10 +32,13 @@ export default function EmailLogin() {
   }
 
   async function LoginFormSumit() {
+    console.log("aa");
+
     const res = await login({
       apiBasePath: apiCtx.BaseAPIPath,
       data: { email: email, password: password },
     });
+    console.log("aa");
 
     if (!res.success) {
       setError(true);
@@ -60,9 +63,11 @@ export default function EmailLogin() {
           </View>
 
           <View style={styles.form}>
-            <Text style={{ color: "red", textAlign: "center" }}>
-              Invalid Credentials
-            </Text>
+            {error && (
+              <Text style={{ color: "red", textAlign: "center" }}>
+                Invalid Credentials
+              </Text>
+            )}
             <TextInput
               style={styles.input}
               onChangeText={setEmail}
@@ -84,7 +89,7 @@ export default function EmailLogin() {
 
             <TouchableOpacity
               style={styles.signInButton}
-              onPress={navigateNext}
+              onPress={LoginFormSumit}
             >
               <Text style={styles.buttonText}>Sign in</Text>
             </TouchableOpacity>
