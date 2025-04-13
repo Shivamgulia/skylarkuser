@@ -99,7 +99,7 @@ export default function Classes() {
           ]}
           renderItem={({ item }) => (
             <TouchableOpacity 
-              onPress={() => navigation.navigate('OnlineYourClass')}
+              onPress={() => navigation.navigate('ClassDetail', { classData: item })}
             >
               <Image source={item.image} style={styles.classImage} />
             </TouchableOpacity>
@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     paddingTop: windowHeight * 0.05,
+    paddingBottom: windowHeight * 0.08, // Add this line
   },
   header: {
     flexDirection: "row",
@@ -289,5 +290,14 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: windowWidth * 0.03,
   },
-  
+  navbar: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: windowHeight * 0.08,
+    paddingBottom: windowHeight * 0.015,
+    backgroundColor: 'white', // Optional: add background color if needed
+    borderTopWidth: 1,      // Optional: add border if needed
+    borderTopColor: '#eee',
+  },
 });

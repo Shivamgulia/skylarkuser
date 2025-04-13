@@ -14,6 +14,10 @@ import Classes from "../screens/Classes";
 import CategoriesDetails from "../screens/CategoriesDetails"; // Updated import
 import OnlineYourClass from "../screens/OnlineYourClass"; // Updated import
 import ScoreDetailsScreen from "../screens/ScoreDetailsScreen"; // Updated import
+import WorkoutDetail from "../screens/WorkoutDetail"; // Updated import
+import ClassDetail from "../screens/ClassDetail"; // Updated import
+import CategoryExercises from "../screens/CategoryExercises"; // Updated import
+import ExerciseDetail from "../screens/ExerciseDetail"; // Updated import
 
 const Stack = createNativeStackNavigator();
 
@@ -83,6 +87,26 @@ const AuthStack = () => {
       <Stack.Screen
         name="ScoreDetailsScreen" // Updated screen name
         component={ScoreDetailsScreen} // Updated component
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WorkoutDetail" // Updated screen name
+        component={WorkoutDetail} // Updated component
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ClassDetail" // Updated screen name
+        component={ClassDetail} // Updated component
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CategoryExercises" // Updated screen name
+        component={CategoryExercises} // Updated component
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ExerciseDetail" // Updated screen name
+        component={ExerciseDetail} // Updated component
         options={{ headerShown: false }}
       />
       

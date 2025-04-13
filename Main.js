@@ -65,13 +65,8 @@ const styles = StyleSheet.create({
   },
   navbar: {
     flex: 0,
-    // paddingBottom: 30,
-    // paddingLeft: 10,
-    // paddingRight: 10,
   },
   loading: {
     flex: 1,
   },
 });
-
-// "expo": "~50.0.13",

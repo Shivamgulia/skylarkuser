@@ -184,7 +184,7 @@ export default function Profile() {
               <Image
                 source={require("../../assets/profile/bmi.png")}
                 resizeMode="contain"
-                style={styles.bmiIcon}  
+                style={styles.bmiIcon}
               />
             </View>
           </View>
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     padding: windowWidth * 0.04,
     marginBottom: windowHeight * 0.03,
-    
+
   },
   subscriptionText: {
     fontSize: windowWidth * 0.04,
@@ -511,8 +511,14 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.03,
   },
   bmiIcon: {
-    width: 50,  
-    height: 50, 
-
+    width: 50,
+    height: 50,
+  },
+  navbar: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: windowHeight * 0.08,
+    paddingBottom: windowHeight * 0.015,
   },
 });

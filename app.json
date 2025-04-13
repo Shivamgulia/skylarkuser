@@ -1,12 +1,15 @@
 {
   "expo": {
-    "name": "skyler",
-    "slug": "skyler",
+    "name": "Dodge Fit",
+    "slug": "Dodge Fit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "owner": "sarthakcoll",
+  
+
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -19,8 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.shivamgulia.skyler"
+      }
+      
     },
     "web": {
       "favicon": "./assets/favicon.png"

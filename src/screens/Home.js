@@ -1,16 +1,19 @@
-import { Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View, Modal } from "react-native";
+import React, { useState, useEffect } from "react";
+
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Icon6 from "react-native-vector-icons/FontAwesome6";
 import Navbar from "../components/UI/Navbar";
 import { useNavigation } from "@react-navigation/native";
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
+const { width } = Dimensions.get('window'); // For responsiveness
 
 export default function Home() {
   const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   const dates = [12, 13, 14, 15, 16, 17, 18];
   const navigation = useNavigation();
+  const [showPopup, setShowPopup] = useState(true); // Control popup visibility
 
   const gamesData = [
     {
@@ -21,14 +24,21 @@ export default function Home() {
       scoreA: 82,
       scoreB: 75,
       date: "2024-03-15",
+      status: "Completed", 
       players: [
         { id: 1, name: "Sarthak Singh", team: "Team Red", score: 22 },
         { id: 2, name: "Harsh Agarwal", team: "Team Blue", score: 18 },
         { id: 2, name: "Harsh Agarwal", team: "Team Blue", score: 18 },
         { id: 2, name: "Harsh Agarwal", team: "Team Blue", score: 18 },
-        { id: 2, name: "Harsh Agarwal", team: "Team Red", score: 18 },        
+        { id: 2, name: "Harsh Agarwal", team: "Team Red", score: 18 },
       ]
     },
+  ];
+
+  const bannerImages = [
+    require('../../assets/banners/banners1.png'),
+    require('../../assets/banners/banners2.png'),
+    require('../../assets/banners/banners3.png'),
   ];
 
   const handleCategoryPress = (category) => {
@@ -78,6 +88,17 @@ export default function Home() {
           />
         </View>
 
+        <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}
+      >
+        {bannerImages.map((image, index) => (
+          <Image key={index} source={image} style={styles.bannerImage} />
+        ))}
+      </ScrollView>
+
         {/* Today's Session */}
         <Pressable
           style={styles.sessionContainer}
@@ -101,11 +122,11 @@ export default function Home() {
 
             <View style={styles.sessionMeta}>
               <View style={styles.metaItem}>
-                <Icon5 name="clock" size={windowWidth * 0.04} color="#8888e9" />
+                <Icon5 name="clock" size={windowWidth * 0.04} color="#90EE90" />
                 <Text style={styles.metaText}>25 min</Text>
               </View>
               <View style={styles.metaItem}>
-                <Icon6 name="bolt-lightning" size={windowWidth * 0.04} color="#8888e9" />
+                <Icon6 name="bolt-lightning" size={windowWidth * 0.04} color="#90EE90" />
                 <Text style={styles.metaText}>560 kcal</Text>
               </View>
               <View style={styles.playButton}>
@@ -144,16 +165,15 @@ export default function Home() {
         ))}
 
 
-// Update the Recent Games Section in the Home component
 <View style={styles.sectionContainer}>
   <View style={styles.sectionHeader}>
     <Text style={styles.sectionTitle}>Recent Matches</Text>
-    <Pressable 
+    <Pressable
       onPress={() => navigation.navigate("ScoreList")}
       style={({ pressed }) => [styles.seeAllButton, pressed && styles.pressed]}
     >
       <Text style={styles.seeAllText}>View All</Text>
-      <Icon5 name="arrow-right" size={12} color="#8888e9" />
+      <Icon5 name="arrow-right" size={14} color="#6366f1" />
     </Pressable>
   </View>
 
@@ -168,10 +188,10 @@ export default function Home() {
         onPress={() => navigation.navigate("ScoreDetailsScreen", { game: item })}
       >
         {/* Status Badge */}
-        <View style={styles.statusBadge}>
-          <Text style={styles.statusText}>Completed</Text>
+        <View style={[styles.statusBadge, { backgroundColor: item.status === 'Completed' ? '#22c55e' : '#f59e0b' }]}>
+          <Text style={styles.statusText}>{item.status}</Text>
         </View>
-        
+
         {/* Teams Section */}
         <View style={styles.teamContainer}>
           {/* Team A */}
@@ -185,7 +205,9 @@ export default function Home() {
           </View>
 
           {/* VS Separator */}
-          <Text style={styles.vsText}>VS</Text>
+          <View style={styles.vsContainer}>
+            <Text style={styles.vsText}>VS</Text>
+          </View>
 
           {/* Team B */}
           <View style={styles.teamWrapper}>
@@ -202,7 +224,7 @@ export default function Home() {
         <View style={styles.gameFooter}>
           <Text style={styles.gameTitle}>{item.gameName}</Text>
           <View style={styles.dateContainer}>
-            <Icon5 name="calendar" size={12} color="#666" />
+            <Icon5 name="calendar" size={14} color="#64748b" />
             <Text style={styles.gameDate}>{item.date}</Text>
           </View>
         </View>
@@ -211,6 +233,28 @@ export default function Home() {
     contentContainerStyle={styles.gameListContent}
   />
 </View>
+
+        {/* Pop up */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={showPopup}
+        >
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <Image
+                source={{ uri: "https://www.reliablesoft.net/wp-content/uploads/2023/04/promotional-marketing-benefits.png" }} // Replace with your image URL
+                style={styles.image}
+              />
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => setShowPopup(false)} // Close the modal
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>Close</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
 
         {/* Spacer for navbar */}
         <View style={{ height: windowHeight * 0.1 }} />
@@ -226,17 +270,144 @@ export default function Home() {
 
 // Data for categories
 const firstCategoryData = [
-  { text: "cardio", image: require("../../assets/homeimages/cardio.png"), color: "white", },
-  { text: "yoga", image: require("../../assets/homeimages/yoga2.jpg"), color: "white" },
-  { text: "boxing", image: require("../../assets/homeimages/boxing.webp"), color: "white" },
+  { text: "Basketball", image: require("../../assets/performance/basketball.jpg"), color: "white" },
+  { text: "Football", image: require("../../assets/performance/football.jpg"), color: "white" },
+  { text: "Cricket", image: require("../../assets/performance/Cricket.jpg"), color: "white" },
+  { text: "Hockey", image: require("../../assets/performance/TableTennis.jpg"), color: "white" }
 ];
 
 const secondCategoryData = [
-  { text: "cardio", image: require("../../assets/homeimages/cat1.png"), color: "white" },
-  { text: "yoga", image: require("../../assets/homeimages/cat2.webp"), color: "white" },
+  { text: "Treadmill Sprint", image: require("../../assets/homeimages/cat1.png"), color: "white" },
+  { text: "Jump Rope", image: require("../../assets/homeimages/cat1.png"), color: "white" },
+  { text: "Rowing Machine", image: require("../../assets/homeimages/cat1.png"), color: "white" },
 ];
 
 const styles = StyleSheet.create({
+
+  
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1e293b',
+  },
+  seeAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  seeAllText: {
+    color: '#6366f1',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  gameListContent: {
+    paddingBottom: 8,
+    gap: 16,
+  },
+  gameCard: {
+    width: 280,
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    marginRight: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  statusBadge: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    backgroundColor: '#22c55e',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    zIndex: 1,
+    marginBottom:8
+  },
+  statusText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  teamContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  teamWrapper: {
+    alignItems: 'center',
+    flex: 1,
+    gap: 8,
+  },
+  teamLogo: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    borderWidth: 2,
+    borderColor: '#e2e8f0',
+  },
+  teamName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1e293b',
+    textAlign: 'center',
+  },
+  teamScore: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1e293b',
+  },
+  vsContainer: {
+    backgroundColor: '#f1f5f9',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  vsText: {
+    color: '#64748b',
+    fontWeight: '800',
+    fontSize: 14,
+  },
+  gameFooter: {
+    borderTopWidth: 1,
+    borderTopColor: '#f1f5f9',
+    paddingTop: 12,
+    gap: 8,
+  },
+  gameTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#334155',
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  gameDate: {
+    fontSize: 12,
+    color: '#64748b',
+  },
+  pressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
+  },
+
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -301,7 +472,7 @@ const styles = StyleSheet.create({
     marginTop: '12'
   },
   sessionBadge: {
-    backgroundColor: '#8888e9',
+    backgroundColor: '#90EE90',
     width: windowWidth * 0.18,
     borderRadius: 27,
     paddingVertical: windowHeight * 0.005,
@@ -335,7 +506,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.035,
   },
   playButton: {
-    backgroundColor: '#8888e9',
+    backgroundColor: '#90EE90',
     padding: windowWidth * 0.03,
     borderRadius: windowWidth * 0.5,
   },
@@ -374,12 +545,7 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "left",
   },
-  infoText: {
-    fontSize: 12,
-    color: "white",
-    textAlign: "left",
-    fontWeight: "bold",
-  },
+  
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -440,4 +606,44 @@ const styles = StyleSheet.create({
   gameListContent: {
     paddingRight: windowWidth * 0.03,
   },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    borderRadius: 15,
+    padding: 20,
+    alignItems: "center",
+    width: "80%",
+  },
+  image: {
+    width: 250,
+    height: 250,
+    borderRadius: 10,
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: "#8888e9",
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+
+  scrollContainer: {
+    alignItems: 'center',
+  },
+  bannerImage: {
+    width: width,
+    height: 80,
+    resizeMode: 'cover',
+    borderRadius: 10,
+    marginRight: 10,
+    
+    margin: 12
+  },
+
+  
 });
