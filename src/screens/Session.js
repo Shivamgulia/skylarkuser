@@ -1,4 +1,13 @@
-import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+} from "react-native";
 import React from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 import Icon6 from "react-native-vector-icons/FontAwesome6";
@@ -14,24 +23,48 @@ export default function Session() {
     {
       title: "Dynamic Warmup : 6 min",
       data: [
-        { image: require("../../assets/homeimages/strength.webp"), text: "Side Stretches Left", time: "8X" },
-        { image: require("../../assets/homeimages/strength.webp"), text: "Side Stretches Right", time: "8X" },
-        { image: require("../../assets/homeimages/strength.webp"), text: "Cobra", time: "8X" },
-      ]
+        {
+          image: require("../../assets/homeimages/strength.webp"),
+          text: "Side Stretches Left",
+          time: "8X",
+        },
+        {
+          image: require("../../assets/homeimages/strength.webp"),
+          text: "Side Stretches Right",
+          time: "8X",
+        },
+        {
+          image: require("../../assets/homeimages/strength.webp"),
+          text: "Cobra",
+          time: "8X",
+        },
+      ],
     },
     {
       title: "Interval : 15 min",
       data: [
-        { image: require("../../assets/homeimages/strength.webp"), text: "Side Stretches Left", time: "8X" },
-        { image: require("../../assets/homeimages/strength.webp"), text: "Side Stretches Right", time: "8X" },
-        { image: require("../../assets/homeimages/strength.webp"), text: "Cobra", time: "8X" },
-      ]
-    }
+        {
+          image: require("../../assets/homeimages/strength.webp"),
+          text: "Side Stretches Left",
+          time: "8X",
+        },
+        {
+          image: require("../../assets/homeimages/strength.webp"),
+          text: "Side Stretches Right",
+          time: "8X",
+        },
+        {
+          image: require("../../assets/homeimages/strength.webp"),
+          text: "Cobra",
+          time: "8X",
+        },
+      ],
+    },
   ];
 
   return (
     <View style={styles.container}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
@@ -49,10 +82,18 @@ export default function Session() {
                 onPress={() => navigation.goBack()}
                 style={styles.backButton}
               >
-                <Icon name="chevron-back" size={windowWidth * 0.04} color="white" />
+                <Icon
+                  name="chevron-back"
+                  size={windowWidth * 0.04}
+                  color="white"
+                />
               </Pressable>
               <Pressable style={styles.settingsButton}>
-                <Icon name="settings-outline" size={windowWidth * 0.04} color="white" />
+                <Icon
+                  name="settings-outline"
+                  size={windowWidth * 0.04}
+                  color="white"
+                />
               </Pressable>
             </View>
 
@@ -65,11 +106,19 @@ export default function Session() {
             {/* Duration and Calories */}
             <View style={styles.metaContainer}>
               <View style={styles.metaItem}>
-                <Icon name="time-outline" size={windowWidth * 0.04} color="#8888e9" />
+                <Icon
+                  name="time-outline"
+                  size={windowWidth * 0.04}
+                  color="#8888e9"
+                />
                 <Text style={styles.metaText}>25 min</Text>
               </View>
               <View style={styles.metaItem}>
-                <Icon6 name="bolt-lightning" size={windowWidth * 0.04} color="#8888e9" />
+                <Icon6
+                  name="bolt-lightning"
+                  size={windowWidth * 0.04}
+                  color="#8888e9"
+                />
                 <Text style={styles.metaText}>560 kcal</Text>
               </View>
             </View>
@@ -99,7 +148,7 @@ export default function Session() {
             />
           </View>
         ))}
-        
+
         {/* Spacer for bottom buttons */}
         <View style={{ height: windowHeight * 0.1 }} />
       </ScrollView>
@@ -129,55 +178,55 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.4,
   },
   topImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     paddingTop: windowHeight * 0.05,
     paddingBottom: windowHeight * 0.03,
   },
   headerButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: windowWidth * 0.04,
   },
   backButton: {
-    backgroundColor: 'black',
+    backgroundColor: "black",
     padding: windowWidth * 0.03,
     borderRadius: windowWidth * 0.5,
   },
   settingsButton: {
-    backgroundColor: 'black',
+    backgroundColor: "black",
     padding: windowWidth * 0.03,
     borderRadius: windowWidth * 0.5,
   },
   exerciseInfo: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   exerciseTitle: {
-    color: 'white',
+    color: "white",
     fontSize: windowWidth * 0.08,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: windowHeight * 0.005,
   },
   trainerName: {
-    color: 'white',
+    color: "white",
     fontSize: windowWidth * 0.06,
   },
   metaContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     gap: windowWidth * 0.1,
   },
   metaItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: windowWidth * 0.02,
   },
   metaText: {
-    color: 'white',
+    color: "white",
     fontSize: windowWidth * 0.035,
   },
   sectionContainer: {
@@ -185,15 +234,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: windowWidth * 0.04,
   },
   sectionTitle: {
-    color: 'white',
+    color: "white",
     fontSize: windowWidth * 0.045,
     marginBottom: windowHeight * 0.02,
   },
   exerciseItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: windowHeight * 0.02,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: "#2a2a2a",
     borderRadius: 10,
     padding: windowWidth * 0.03,
   },
@@ -207,39 +256,39 @@ const styles = StyleSheet.create({
     marginLeft: windowWidth * 0.04,
   },
   exerciseName: {
-    color: 'white',
+    color: "white",
     fontSize: windowWidth * 0.04,
     marginBottom: windowHeight * 0.005,
   },
   exerciseDuration: {
-    color: 'white',
+    color: "white",
     fontSize: windowWidth * 0.035,
   },
   bottomBar: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
     padding: windowWidth * 0.04,
-    backgroundColor: '#1d1d1d',
+    backgroundColor: "#1d1d1d",
   },
   startButton: {
     flex: 1,
-    backgroundColor: '#8288E8',
+    backgroundColor: "#8288E8",
     height: windowHeight * 0.07,
     borderRadius: windowHeight * 0.035,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginRight: windowWidth * 0.03,
   },
   startButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: windowWidth * 0.045,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   musicButton: {
-    backgroundColor: '#414339',
+    backgroundColor: "#414339",
     padding: windowWidth * 0.04,
     borderRadius: windowWidth * 0.5,
     aspectRatio: 1,

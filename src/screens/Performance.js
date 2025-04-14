@@ -8,16 +8,16 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import { useState } from "react"; // Add this import
+import { useContext, useEffect, useState } from "react"; // Add this import
 import Icon from "react-native-vector-icons/FontAwesome";
 import Navbar from "../components/UI/Navbar";
 import { Dimensions } from "react-native";
 import { Modal, TextInput } from "react-native";
+import { APIContext } from "../store/apiContext";
+import { getGoalsByCoachId } from "../lib/goals";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-
-
 
 const gymCategories = [
   {
@@ -60,7 +60,7 @@ const gymCategories = [
         image: require("../../assets/exercises/LatpullDown.jpg"),
         instructions: "...",
       },
-    ]
+    ],
   },
   {
     id: 2,
@@ -72,8 +72,7 @@ const gymCategories = [
         image: require("../../assets/exercises/LatpullDown.jpg"),
         instructions: "...",
       },
-
-    ]
+    ],
   },
   {
     id: 3,
@@ -85,7 +84,7 @@ const gymCategories = [
         image: require("../../assets/exercises/LatpullDown.jpg"),
         instructions: "...",
       },
-    ]
+    ],
   },
   {
     id: 4,
@@ -97,8 +96,8 @@ const gymCategories = [
         image: require("../../assets/exercises/LatpullDown.jpg"),
         instructions: "...",
       },
-    ]
-  }
+    ],
+  },
 ];
 
 const workoutData = [
@@ -111,8 +110,8 @@ const workoutData = [
     kpi: {
       points: { current: 0, target: 20 },
       rebounds: { current: 0, target: 5 },
-      assists: { current: 0, target: 3 }
-    }
+      assists: { current: 0, target: 3 },
+    },
   },
   {
     id: 2,
@@ -123,12 +122,11 @@ const workoutData = [
     kpi: {
       goals: { current: 0, target: 2 },
       passes: { current: 0, target: 15 },
-      tackles: { current: 0, target: 5 }
-    }
+      tackles: { current: 0, target: 5 },
+    },
   },
   // Add more sports with their specific KPIs
 ];
-
 
 export default function Performance({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState("sports"); // Add state
@@ -138,8 +136,46 @@ export default function Performance({ navigation }) {
   const [isSportsModalVisible, setIsSportsModalVisible] = useState(false);
   const [sportKpiInputs, setSportKpiInputs] = useState({});
 
+  const [goals, setGoals] = useState([]);
+  const [gymGoals, setGymGoals] = useState([]);
+  const [sportsGoals, setSportsGoals] = useState([]);
 
-  const filteredData = workoutData.filter(item => item.category === selectedCategory);
+  const filteredData = workoutData.filter(
+    (item) => item.category === selectedCategory
+  );
+
+  const apiCtx = useContext(APIContext);
+
+  async function loadInitialData() {
+    const goalsRes = await getGoalsByCoachId({
+      token: "",
+      coachId: 1,
+      apiBasePath: apiCtx.BaseAPIPath,
+    });
+
+    if (!goalsRes.success) {
+      return;
+    }
+
+    setGoals(goalsRes.data);
+    goalsSeparator(goalsRes.data);
+  }
+
+  function goalsSeparator(list) {
+    const tempGymGoals = list.filter((goal) => {
+      return goal.filter == "gym";
+    });
+    const tempSportsGoals = list.filter((goal) => {
+      return goal.filter == "sports";
+    });
+
+    setGymGoals(tempGymGoals);
+    setSportsGoals(tempSportsGoals);
+  }
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
 
   return (
     <SafeAreaView style={[styles.container, { marginTop: 20 }]}>
@@ -147,22 +183,16 @@ export default function Performance({ navigation }) {
         style={styles.container}
         contentContainerStyle={styles.scrollContent}
       >
-
-
         <View style={styles.container}>
           <Text style={styles.heading}>Track Your Performance</Text>
         </View>
-
-
 
         {/* QR Code Section */}
         <View style={styles.qrContainer}>
           <View style={styles.qrContent}>
             <View style={styles.qrTextContainer}>
               <Text style={styles.qrTitle}>Scan Me</Text>
-              <Text style={styles.qrSubtitle}>
-                Scan the QR code to mark
-              </Text>
+              <Text style={styles.qrSubtitle}>Scan the QR code to mark</Text>
             </View>
             <Image
               source={require("../../assets/performance/qr.png")}
@@ -177,14 +207,16 @@ export default function Performance({ navigation }) {
           <TouchableOpacity
             style={[
               styles.categoryButton,
-              selectedCategory === "sports" && styles.activeCategoryButton
+              selectedCategory === "sports" && styles.activeCategoryButton,
             ]}
             onPress={() => setSelectedCategory("sports")}
           >
-            <Text style={[
-              styles.categoryButtonText,
-              selectedCategory === "sports" && styles.activeCategoryText
-            ]}>
+            <Text
+              style={[
+                styles.categoryButtonText,
+                selectedCategory === "sports" && styles.activeCategoryText,
+              ]}
+            >
               Sports
             </Text>
           </TouchableOpacity>
@@ -192,21 +224,23 @@ export default function Performance({ navigation }) {
           <TouchableOpacity
             style={[
               styles.categoryButton,
-              selectedCategory === "gym" && styles.activeCategoryButton
+              selectedCategory === "gym" && styles.activeCategoryButton,
             ]}
             onPress={() => setSelectedCategory("gym")}
           >
-            <Text style={[
-              styles.categoryButtonText,
-              selectedCategory === "gym" && styles.activeCategoryText
-            ]}>
+            <Text
+              style={[
+                styles.categoryButtonText,
+                selectedCategory === "gym" && styles.activeCategoryText,
+              ]}
+            >
               Gym
             </Text>
           </TouchableOpacity>
         </View>
 
         <FlatList
-          data={selectedCategory === "gym" ? gymCategories : filteredData}
+          data={selectedCategory === "gym" ? gymGoals : sportsGoals}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           contentContainerStyle={styles.workoutList}
@@ -217,7 +251,7 @@ export default function Performance({ navigation }) {
                 if (selectedCategory === "gym") {
                   navigation.navigate("CategoryExercises", {
                     category: item.name,
-                    exercises: item.exercises
+                    exercises: item.exercises,
                   });
                 } else {
                   setSelectedSport(item);
@@ -225,12 +259,8 @@ export default function Performance({ navigation }) {
                   setSportKpiInputs({});
                 }
               }}
-
             >
-              <Image
-                source={item.image}
-                style={styles.workoutImage}
-              />
+              <Image source={item.image} style={styles.workoutImage} />
               <View style={styles.workoutInfo}>
                 <Text style={styles.workoutText}>
                   {selectedCategory === "gym" ? item.name : item.text}
@@ -243,7 +273,6 @@ export default function Performance({ navigation }) {
           )}
         />
 
-
         {/* Spacer for bottom navbar */}
         <View style={styles.spacer} />
       </ScrollView>
@@ -254,71 +283,67 @@ export default function Performance({ navigation }) {
       </View>
 
       <Modal
-  visible={isSportsModalVisible}
-  animationType="slide"
-  transparent={true}
-  onRequestClose={() => setIsSportsModalVisible(false)}
->
-  <View style={styles.modalContainer}>
-    <View style={styles.modalContent}>
-      <Text style={styles.modalTitle}>
-        {(selectedSport?.text || 'Football')} Performance
-      </Text>
-
-      <ScrollView>
-        {/* SAMPLE KPI DATA */}
-        {[
-          { metric: 'goals', current: 3, target: 5 },
-          { metric: 'assists', current: 2, target: 4 },
-          { metric: 'passes', current: 45, target: 60 },
-        ].map(({ metric, current, target }) => (
-          <View key={metric} style={styles.kpiRow}>
-            <Text style={styles.kpiLabel}>
-              {metric.charAt(0).toUpperCase() + metric.slice(1)}:
+        visible={isSportsModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsSportsModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>
+              {selectedSport?.text || "Football"} Performance
             </Text>
-            <TextInput
-              style={styles.kpiInput}
-              keyboardType="numeric"
-              placeholder={`Current (${current}/${target})`}
-              value={sportKpiInputs[metric]?.toString()}
-              onChangeText={(text) =>
-                setSportKpiInputs((prev) => ({
-                  ...prev,
-                  [metric]: text,
-                }))
-              }
-            />
+
+            <ScrollView>
+              {/* SAMPLE KPI DATA */}
+              {/* {[
+                { metric: "goals", current: 3, target: 5 },
+                { metric: "assists", current: 2, target: 4 },
+                { metric: "passes", current: 45, target: 60 },] */}
+              {selectedSport.activities.map(({ name, target }) => (
+                <View key={metric} style={styles.kpiRow}>
+                  <Text style={styles.kpiLabel}>
+                    {name.charAt(0).toUpperCase() + name.slice(1)}:
+                  </Text>
+                  <TextInput
+                    style={styles.kpiInput}
+                    keyboardType="numeric"
+                    placeholder={`Current (${target})`}
+                    value={sportKpiInputs[metric]?.toString()}
+                    onChangeText={(text) =>
+                      setSportKpiInputs((prev) => ({
+                        ...prev,
+                        [name]: text,
+                      }))
+                    }
+                  />
+                </View>
+              ))}
+            </ScrollView>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setIsSportsModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.saveButton]}
+                onPress={() => {
+                  console.log("Saved KPIs:", sportKpiInputs);
+                  setIsSportsModalVisible(false);
+                }}
+              >
+                <Text style={styles.buttonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        ))}
-      </ScrollView>
-
-      <View style={styles.modalButtons}>
-        <TouchableOpacity
-          style={[styles.modalButton, styles.cancelButton]}
-          onPress={() => setIsSportsModalVisible(false)}
-        >
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.modalButton, styles.saveButton]}
-          onPress={() => {
-            console.log('Saved KPIs:', sportKpiInputs);
-            setIsSportsModalVisible(false);
-          }}
-        >
-          <Text style={styles.buttonText}>Save</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  </View>
-</Modal>
-
-
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -327,11 +352,11 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000000',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#000000",
+    textAlign: "center",
     marginTop: 30,
-    marginBottom: 30
+    marginBottom: 30,
   },
   scrollContent: {
     paddingTop: 25,
@@ -423,11 +448,11 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     overflow: "hidden",
     maxWidth: (windowWidth - 40) / 2, // Two columns with margins
-    maxHeight: '200'
+    maxHeight: "200",
   },
   workoutImage: {
     maxWidth: (windowWidth - 40) / 2, // Two columns with margins
-    maxHeight: '200'
+    maxHeight: "200",
   },
   workoutInfo: {
     backgroundColor: "black",
@@ -439,31 +464,29 @@ const styles = StyleSheet.create({
   },
   workoutText: {
     color: "white",
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   workoutTime: {
     color: "white",
     paddingTop: 5,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   spacer: {
     height: 50,
   },
   navbar: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    width: '100%',
+    width: "100%",
     height: windowHeight * 0.08,
     paddingBottom: windowHeight * 0.015,
   },
-
 
   categoryButtonsContainer: {
     flexDirection: "row",
     justifyContent: "center",
     marginVertical: 15,
     marginHorizontal: 10,
-
   },
   categoryButton: {
     paddingHorizontal: 25,
@@ -484,7 +507,6 @@ const styles = StyleSheet.create({
   activeCategoryText: {
     color: "#fff",
   },
-
 
   //new
 
@@ -531,26 +553,26 @@ const styles = StyleSheet.create({
   //sports
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
-    backgroundColor: 'white',
-    width: '90%',
+    backgroundColor: "white",
+    width: "90%",
     borderRadius: 10,
     padding: 20,
-    maxHeight: '80%',
+    maxHeight: "80%",
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   kpiRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 8,
   },
   kpiLabel: {
@@ -561,28 +583,26 @@ const styles = StyleSheet.create({
   kpiInput: {
     flex: 2,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 8,
   },
   modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 15,
   },
   modalButton: {
     flex: 1,
     padding: 12,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 5,
   },
   cancelButton: {
-    backgroundColor: '#ff3b30',
+    backgroundColor: "#ff3b30",
   },
   saveButton: {
-    backgroundColor: '#34C759',
+    backgroundColor: "#34C759",
   },
-
-
 });

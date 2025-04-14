@@ -42,12 +42,15 @@ export default function EmailLogin() {
 
     if (!res.success) {
       setError(true);
+      // TODO remove afterwords
+      navigateNext();
       return;
     }
     setError(false);
     // login
 
     authCtx.login({ token: res.data.token, user: res.data.user });
+    navigateNext();
   }
 
   return (
