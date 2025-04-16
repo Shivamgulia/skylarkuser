@@ -15,6 +15,7 @@ import { Dimensions } from "react-native";
 import { Modal, TextInput } from "react-native";
 import { APIContext } from "../store/apiContext";
 import { getGoalsByCoachId } from "../lib/goals";
+import { AuthContext } from "../store/authContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -129,7 +130,7 @@ const workoutData = [
 ];
 
 export default function Performance({ navigation }) {
-  const [selectedCategory, setSelectedCategory] = useState("sports"); // Add state
+  const [selectedCategory, setSelectedCategory] = useState("GYM"); // Add state
   const topList = ["Workout", "Fitness", "Strength", "Training"];
 
   const [selectedSport, setSelectedSport] = useState(null);
@@ -144,18 +145,24 @@ export default function Performance({ navigation }) {
     (item) => item.category === selectedCategory
   );
 
+  console.log(gymGoals, "gym", sportsGoals, "sports");
+
   const apiCtx = useContext(APIContext);
+  const authCtx = useContext(AuthContext);
 
   async function loadInitialData() {
     const goalsRes = await getGoalsByCoachId({
-      token: "",
-      coachId: 1,
-      apiBasePath: apiCtx.BaseAPIPath,
+      token: authCtx.token,
+      coachId: authCtx.user.coach.id,
+      baseApiPath: apiCtx.BaseAPIPath,
     });
+    console.log(goalsRes);
 
     if (!goalsRes.success) {
       return;
     }
+
+    console.log(goalsRes);
 
     setGoals(goalsRes.data);
     goalsSeparator(goalsRes.data);
@@ -163,10 +170,10 @@ export default function Performance({ navigation }) {
 
   function goalsSeparator(list) {
     const tempGymGoals = list.filter((goal) => {
-      return goal.filter == "gym";
+      return goal.category == "GYM";
     });
     const tempSportsGoals = list.filter((goal) => {
-      return goal.filter == "sports";
+      return goal.category == "SPORTS";
     });
 
     setGymGoals(tempGymGoals);
@@ -207,14 +214,14 @@ export default function Performance({ navigation }) {
           <TouchableOpacity
             style={[
               styles.categoryButton,
-              selectedCategory === "sports" && styles.activeCategoryButton,
+              selectedCategory === "SPORTS" && styles.activeCategoryButton,
             ]}
-            onPress={() => setSelectedCategory("sports")}
+            onPress={() => setSelectedCategory("SPORTS")}
           >
             <Text
               style={[
                 styles.categoryButtonText,
-                selectedCategory === "sports" && styles.activeCategoryText,
+                selectedCategory === "SPORTS" && styles.activeCategoryText,
               ]}
             >
               Sports
@@ -224,14 +231,14 @@ export default function Performance({ navigation }) {
           <TouchableOpacity
             style={[
               styles.categoryButton,
-              selectedCategory === "gym" && styles.activeCategoryButton,
+              selectedCategory === "GYM" && styles.activeCategoryButton,
             ]}
-            onPress={() => setSelectedCategory("gym")}
+            onPress={() => setSelectedCategory("GYM")}
           >
             <Text
               style={[
                 styles.categoryButtonText,
-                selectedCategory === "gym" && styles.activeCategoryText,
+                selectedCategory === "GYM" && styles.activeCategoryText,
               ]}
             >
               Gym
@@ -240,7 +247,7 @@ export default function Performance({ navigation }) {
         </View>
 
         <FlatList
-          data={selectedCategory === "gym" ? gymGoals : sportsGoals}
+          data={selectedCategory === "GYM" ? gymGoals : sportsGoals}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           contentContainerStyle={styles.workoutList}
@@ -248,10 +255,10 @@ export default function Performance({ navigation }) {
             <TouchableOpacity
               style={styles.workoutItem}
               onPress={() => {
-                if (selectedCategory === "gym") {
+                if (selectedCategory === "GYM") {
                   navigation.navigate("CategoryExercises", {
-                    category: item.name,
-                    exercises: item.exercises,
+                    category: item.category,
+                    exercises: item.name,
                   });
                 } else {
                   setSelectedSport(item);
@@ -260,14 +267,15 @@ export default function Performance({ navigation }) {
                 }
               }}
             >
-              <Image source={item.image} style={styles.workoutImage} />
+              <Image
+                source={require("../../assets/homeimages/cat1.png")}
+                style={styles.workoutImage}
+              />
               <View style={styles.workoutInfo}>
-                <Text style={styles.workoutText}>
-                  {selectedCategory === "gym" ? item.name : item.text}
-                </Text>
-                {selectedCategory !== "gym" && (
+                <Text style={styles.workoutText}>{item.name}</Text>
+                {/* {selectedCategory !== "GYM" && (
                   <Text style={styles.workoutTime}>{item.time}</Text>
-                )}
+                )} */}
               </View>
             </TouchableOpacity>
           )}
@@ -300,20 +308,20 @@ export default function Performance({ navigation }) {
                 { metric: "goals", current: 3, target: 5 },
                 { metric: "assists", current: 2, target: 4 },
                 { metric: "passes", current: 45, target: 60 },] */}
-              {selectedSport.activities.map(({ name, target }) => (
+              {selectedSport?.measures.map(({ measure, quantity, unit }) => (
                 <View key={metric} style={styles.kpiRow}>
                   <Text style={styles.kpiLabel}>
-                    {name.charAt(0).toUpperCase() + name.slice(1)}:
+                    {measure.charAt(0).toUpperCase() + name.slice(1)}:
                   </Text>
                   <TextInput
                     style={styles.kpiInput}
                     keyboardType="numeric"
-                    placeholder={`Current (${target})`}
+                    placeholder={`Current (${quantity} ${unit})`}
                     value={sportKpiInputs[metric]?.toString()}
                     onChangeText={(text) =>
                       setSportKpiInputs((prev) => ({
                         ...prev,
-                        [name]: text,
+                        [measure]: text,
                       }))
                     }
                   />

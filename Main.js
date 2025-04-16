@@ -6,6 +6,7 @@ import { AuthContext } from "./src/store/authContext";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AuthStack from "./src/stacks/AuthStack";
+import StudentStack from "./src/stacks/StudentStack";
 
 export default function Main() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -43,9 +44,8 @@ export default function Main() {
   return (
     <>
       <NavigationContainer>
-        {/* {!loggedIn && <AuthStack />} */}
-        <AuthStack />
-        {/* {loggedIn && <UserStack />} */}
+        {!loggedIn && <AuthStack />}
+        {loggedIn && <StudentStack />}
         {/* {loggedIn && (
           <View style={styles.navbar}>
             <Navbar />

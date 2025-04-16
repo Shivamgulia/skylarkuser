@@ -18,7 +18,9 @@ export async function postGame({ baseApiPath, gameData }) {
   try {
     const gameRes = await fetch(`${baseApiPath}/games`, {
       method: "POST",
-      ContentType: "application/json",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: gameData,
     });
 

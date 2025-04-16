@@ -2,7 +2,9 @@ export async function setActivities({ token, apiBasePath, activity }) {
   try {
     const activityRes = await fetch(`${apiBasePath}/api/v1/activitys`, {
       method: "POST",
-      ContentType: "application/json",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: activity,
     });
     if (!activityRes.ok) {
@@ -50,7 +52,9 @@ export async function verifyActivity({ apiBasePath, activityIds }) {
       `${apiBasePath}/api/v1/verfiyactivity/${coachId}`,
       {
         method: "PUT",
-        ContentType: "application/json",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: { activityIds: activityIds },
       }
     );

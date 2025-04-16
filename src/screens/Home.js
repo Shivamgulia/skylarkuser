@@ -11,12 +11,16 @@ import {
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 
+import images from "../lib/images";
+
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Icon6 from "react-native-vector-icons/FontAwesome6";
 import Navbar from "../components/UI/Navbar";
 import { useNavigation } from "@react-navigation/native";
 import { getGames } from "../lib/games";
 import { APIContext } from "../store/apiContext";
+import { getGoalsByCoachId } from "../lib/goals";
+import { AuthContext } from "../store/authContext";
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 const { width } = Dimensions.get("window"); // For responsiveness
@@ -26,10 +30,12 @@ export default function Home() {
   const dates = [12, 13, 14, 15, 16, 17, 18];
 
   const [games, setGames] = useState();
+  const [goals, setGoals] = useState();
 
   const [showPopup, setShowPopup] = useState(true); // Control popup visibility
 
   const apiCtx = useContext(APIContext);
+  const authCtx = useContext(AuthContext);
 
   const navigation = useNavigation();
 
@@ -63,7 +69,7 @@ export default function Home() {
     navigation.navigate("CategoriesDetails", { category }); //Updated screen name
   };
 
-  async function loadInitialData() {
+  async function loadGames() {
     const gamesRes = await getGames({ baseApiPath: apiCtx.BaseAPIPath });
 
     if (!gamesRes.success) {
@@ -72,10 +78,24 @@ export default function Home() {
 
     setGames(gamesRes.data);
   }
+  async function loadGoals() {
+    const goalsRes = await getGoalsByCoachId({
+      baseApiPath: apiCtx.BaseAPIPath,
+      token: authCtx.token,
+      coachId: authCtx.user.coach.id,
+    });
+
+    if (!goalsRes.success) {
+      return;
+    }
+
+    setGoals(goalsRes.data);
+  }
 
   useEffect(() => {
-    loadInitialData();
-  }, []);
+    loadGames();
+    loadGoals();
+  }, [apiCtx]);
 
   return (
     <View style={styles.container}>
@@ -173,32 +193,28 @@ export default function Home() {
         </Pressable>
 
         {/* Categories Sections */}
-        {[1, 2].map((section) => (
-          <View key={section} style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Categories</Text>
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={section === 1 ? firstCategoryData : secondCategoryData}
-              keyExtractor={(item) => item.text}
-              renderItem={({ item }) => (
-                <Pressable onPress={() => handleCategoryPress(item.text)}>
-                  <View style={styles.categoryCard}>
-                    <Image
-                      source={item.image}
-                      style={styles.categoryImage}
-                      resizeMode="cover"
-                    />
-                    <Text style={[styles.categoryText, { color: item.color }]}>
-                      {item.text}
-                    </Text>
-                  </View>
-                </Pressable>
-              )}
-              contentContainerStyle={styles.categoryContent}
-            />
-          </View>
-        ))}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Goals</Text>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={goals}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Pressable onPress={() => handleCategoryPress(item)}>
+                <View style={styles.categoryCard}>
+                  <Image
+                    source={require("../../assets/homeimages/cat1.png")}
+                    style={styles.categoryImage}
+                    resizeMode="cover"
+                  />
+                  <Text style={[styles.categoryText]}>{item.name}</Text>
+                </View>
+              </Pressable>
+            )}
+            contentContainerStyle={styles.categoryContent}
+          />
+        </View>
 
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeader}>

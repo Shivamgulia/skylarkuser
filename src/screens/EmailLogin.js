@@ -42,16 +42,16 @@ export default function EmailLogin() {
 
     if (!res.success) {
       setError(true);
-      // TODO remove afterwords
-      navigateNext();
+
       return;
     }
     setError(false);
-    // login
 
-    authCtx.login({ token: res.data.token, user: res.data.user });
+    authCtx.login({ token: res.data.token, user: res.data.student });
     navigateNext();
   }
+
+  console.log(authCtx.user, authCtx.token);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -22,17 +22,24 @@ export async function getUserDetails({ token, studentId, apiBasePath }) {
 
 export async function login({ apiBasePath, data }) {
   try {
-    const loginRes = await fetch(`${apiBasePath}/auth/login`, {
+    console.log({ email: data.email, password: data.password });
+
+    const loginRes = await fetch(`${apiBasePath}/auth/login/student`, {
       method: "POST",
-      ContentType: "application/json",
-      body: { email: data.email, password: data.password },
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: data.email, password: data.password }),
     });
 
     if (!loginRes.ok) {
+      console.log("failed");
+
       return { success: false };
     }
 
     const user = await loginRes.json();
+    console.log(user);
 
     return { success: true, data: user };
   } catch (e) {
@@ -42,14 +49,16 @@ export async function login({ apiBasePath, data }) {
 
 export async function signup({ apiBasePath, data }) {
   try {
-    const signupRes = await fetch(`${apiBasePath}/auth/login`, {
+    const signupRes = await fetch(`${apiBasePath}/auth/signup/student`, {
       method: "POST",
-      ContentType: "application/json",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: {
         email: data.email,
         password: data.password,
         name: data.name,
-        role: "Student",
+        coachId: data.coachid,
       },
     });
 
